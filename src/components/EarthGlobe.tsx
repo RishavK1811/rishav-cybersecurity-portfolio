@@ -65,9 +65,9 @@ export function EarthGlobe({ reducedMotion = false }: EarthGlobeProps) {
   const ATMOSPHERE_RADIUS = 1.208
 
   const [dayTexture, cloudsTexture, specularTexture] = useLoader(THREE.TextureLoader, [
-    '/textures/earth/earth_day_2048.jpg',
-    '/textures/earth/earth_clouds_1024.png',
-    '/textures/earth/earth_specular_2048.jpg',
+    `${import.meta.env.BASE_URL}textures/earth/earth_day_2048.jpg`,
+    `${import.meta.env.BASE_URL}textures/earth/earth_clouds_1024.png`,
+    `${import.meta.env.BASE_URL}textures/earth/earth_specular_2048.jpg`,
   ])
 
   useEffect(() => {
