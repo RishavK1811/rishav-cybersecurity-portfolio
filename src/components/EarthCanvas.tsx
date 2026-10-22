@@ -2,7 +2,6 @@ import { Canvas } from '@react-three/fiber'
 import { Component, Suspense, useEffect, useRef, useState, type ErrorInfo, type ReactNode } from 'react'
 import { EarthGlobe } from './EarthGlobe'
 
-// Error boundary to catch WebGL context creation or rendering errors
 interface ErrorBoundaryProps {
   fallback: ReactNode
   children: ReactNode
@@ -34,22 +33,20 @@ class WebGLErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStat
   }
 }
 
-// Graceful static fallback displayed if WebGL is unsupported or textures fail to load
 function EarthFallback() {
   return (
-    <div className="earth-fallback" aria-label="Earth visualization placeholder">
+    <div className="earth-fallback" role="img" aria-label="Fallback globe illustration">
       <div className="earth-fallback-sphere">
         <div className="earth-fallback-glow" />
         <div className="earth-fallback-surface" />
       </div>
       <div className="earth-fallback-label">
-        <span>Hardware 3D Accelerated Preview</span>
+        <span>Static Globe View · WebGL Unavailable</span>
       </div>
     </div>
   )
 }
 
-// Minimal loading placeholder while textures stream
 function EarthLoader() {
   return (
     <div className="earth-loader" aria-hidden="true">
@@ -61,10 +58,14 @@ function EarthLoader() {
 export function EarthCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(true)
-  const [reducedMotion, setReducedMotion] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+  )
   const [supportsWebGL, setSupportsWebGL] = useState(true)
+  const [maxDpr, setMaxDpr] = useState(1.75)
 
-  // 1. Detect WebGL support
   useEffect(() => {
     try {
       const canvas = document.createElement('canvas')
@@ -75,9 +76,15 @@ export function EarthCanvas() {
     } catch {
       setSupportsWebGL(false)
     }
+
+    const updateDpr = () => {
+      setMaxDpr(window.innerWidth < 768 ? 1.35 : 1.85)
+    }
+    updateDpr()
+    window.addEventListener('resize', updateDpr, { passive: true })
+    return () => window.removeEventListener('resize', updateDpr)
   }, [])
 
-  // 2. Detect prefers-reduced-motion
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
     setReducedMotion(mq.matches)
@@ -87,9 +94,9 @@ export function EarthCanvas() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // 3. Pause rendering loop when visual container is outside the viewport to conserve mobile battery
   useEffect(() => {
-    if (!containerRef.current) return
+    const el = containerRef.current
+    if (!el) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -98,7 +105,7 @@ export function EarthCanvas() {
       { threshold: 0.05 }
     )
 
-    observer.observe(containerRef.current)
+    observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
@@ -111,17 +118,16 @@ export function EarthCanvas() {
       <WebGLErrorBoundary fallback={<EarthFallback />}>
         <Suspense fallback={<EarthLoader />}>
           <Canvas
-            camera={{ position: [0, 0, 4.5], fov: 40 }}
-            dpr={[1, typeof window !== 'undefined' && window.innerWidth < 768 ? 1.5 : 2]}
-            frameloop={isVisible ? 'always' : 'never'}
+            camera={{ position: [0, 0, 4.45], fov: 40 }}
+            dpr={[1, maxDpr]}
+            frameloop={isVisible ? (reducedMotion ? 'demand' : 'always') : 'never'}
             gl={{
               antialias: true,
               alpha: true,
               powerPreference: 'high-performance',
             }}
           >
-            {/* Natural Sunlight & Ambient Lighting: balanced to show vibrant oceans and recognizable continents */}
-            <ambientLight intensity={0.62} color="#2b2d3a" />
+            <ambientLight intensity={0.64} color="#2b2d3a" />
             <directionalLight position={[3.6, 1.8, 4.2]} intensity={2.45} color="#ffffff" />
             <pointLight position={[-4.2, -1.8, -2.5]} intensity={0.22} color="#b5a0f2" />
 
