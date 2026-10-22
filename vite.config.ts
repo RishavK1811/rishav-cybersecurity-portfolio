@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
-  base: process.env.GITHUB_ACTIONS === 'true' ? '/rishav-cybersecurity-portfolio/' : '/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/rishav-cybersecurity-portfolio/' : '/',
   plugins: [react(), tailwindcss()],
-})
+}))
