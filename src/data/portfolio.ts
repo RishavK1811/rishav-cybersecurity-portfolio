@@ -91,21 +91,28 @@ export const projects: Project[] = [
     slug: 'password-security-checker',
     title: 'Password Security Checker',
     category: 'Security Tooling · Python',
-    summary: 'A rule-based Python command-line utility that evaluates password strength against five foundational security requirements and highlights missing criteria.',
-    problem: 'Users and junior administrators frequently create passwords omitting fundamental complexity requirements, leaving accounts vulnerable to automated credential-stuffing and basic dictionary attacks.',
-    objective: 'Create an accessible, standalone Python utility that checks user-submitted passwords against length, case diversity, numeric, and symbol rules, providing unambiguous feedback for remediation.',
+    summary:
+      'A lightweight Python command-line utility that evaluates passwords against five configurable character-composition and length requirements, then provides feedback on unmet rules.',
+    problem:
+      'Users frequently configure passwords that fail basic length and character-diversity standards without clear visibility into which specific policy criteria were missed. While simple composition rules do not evaluate guessability or protect against dictionary or credential-stuffing attacks, enforcing baseline complexity checks serves as a practical introduction to input validation and defensive credential policy principles.',
+    objective:
+      'Develop an accessible, standalone Python CLI utility that evaluates user-submitted passwords against five fundamental composition rules (length, uppercase, lowercase, numeric digits, and special characters) and outputs clear, actionable terminal feedback indicating which specific criteria were unmet.',
     approach: [
-      'Evaluate minimum password length (at least 8 characters).',
-      'Audit character composition for both uppercase and lowercase alphabetical characters.',
-      'Verify the presence of numeric digits (0-9).',
+      'Validate input presence and enforce a minimum length threshold of 8 characters.',
+      'Check character diversity for uppercase and lowercase alphabetical letters.',
+      'Verify the presence of numeric digits (0–9).',
       'Check for special symbols against a defined character set (!@#$%^&*()-_=+[]{}|;:\',.<>?/`~).',
-      'Classify result as Strong or Weak with granular feedback specifying each unmet requirement.',
+      'Report whether the input meets all basic rules and enumerate specific unmet requirements for remediation.',
     ],
     tools: ['Python 3', 'VS Code', 'Git', 'CLI'],
-    implementation: 'Built with Python 3 as an interactive CLI script (main.py). The utility receives user input, validates against empty strings, evaluates character classes through sequential parsing (isupper, islower, isdigit, and membership within a special-character lookup string), and renders immediate terminal diagnostics.',
-    testing: 'Tested locally across diverse test cases: empty input, short strings (< 8 chars), alphabetic-only strings, numeric-only strings, and fully compliant passwords. Confirmed that all failing conditions accurately enumerate their exact missing requirements.',
-    challenges: 'Balancing concise code structure with clean, friendly terminal feedback so non-technical users immediately understand which specific rules failed without confusion.',
-    limitations: 'Rule-based check only (Version 1). Does not calculate entropy bits, check against known breached password lists (e.g. HaveIBeenPwned), or generate password suggestions. These features are documented as planned future improvements.',
+    implementation:
+      'Built with Python 3 as an interactive CLI script (main.py). The utility receives user input, validates against empty strings, evaluates character classes through sequential condition parsing (isupper, islower, isdigit, and membership within a configured special-character lookup string), and renders immediate terminal diagnostics indicating which of the five basic policy rules passed or failed.',
+    testing:
+      'Tested locally against structured test cases: empty input, strings below minimum length (< 8 characters), single-class strings (alphabetic-only, numeric-only), and inputs satisfying all five configured rules. Verified that the output accurately reports compliance status and lists exact missing criteria.',
+    challenges:
+      'Structuring sequential character-parsing checks clearly in standard Python while keeping terminal diagnostics informative and unambiguous about which specific policy criteria failed without confusing basic rule compliance with comprehensive security validation.',
+    limitations:
+      'Rule-based policy validation only. Meeting all five rules does not guarantee that a password is cryptographically secure or resistant to dictionary attacks (e.g., common pattern substitutions). The utility does not calculate mathematical entropy, estimate guessability, check against breach databases such as HaveIBeenPwned, or generate secure passwords. These capabilities are documented as potential future learning milestones.',
     status: 'Version 1 · Implemented',
     github: 'https://github.com/RishavK1811/Password-Security-Checker',
   },

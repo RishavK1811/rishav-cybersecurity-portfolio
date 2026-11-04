@@ -22,15 +22,31 @@ Open the local address printed by Vite (normally `http://localhost:5173`).
 
 ```bash
 npm run typecheck
+```
+
+### 1. Root-Domain Production Build (Vercel, Netlify, Custom Domain)
+
+```bash
 npm run build
 npm run preview
 ```
 
-`npm run build` creates a deployable production site in `dist/`.
+Generates production assets with root-relative base path (`/`) in `dist/`.
 
-## Deployment
+### 2. GitHub Pages Production Build
 
-Deploy the contents of `dist/` to a static host such as Vercel, Netlify, GitHub Pages, or Cloudflare Pages. Configure your provider to rewrite unknown routes to `index.html` so direct visits to `/projects/<slug>` load the React app.
+```bash
+npm run build:gh-pages
+# or: GITHUB_PAGES=true npm run build
+```
+
+Generates production assets configured for the repository subpath (`/rishav-cybersecurity-portfolio/`) and creates `dist/404.html` for client-side deep routing.
+
+## Deployment & Routing
+
+- **Base Path Behavior**: GitHub Pages project sites are served from a subpath (`/<repo-name>/`), whereas platforms like Vercel or Netlify host directly from the domain root (`/`). Vite evaluates `process.env.GITHUB_PAGES === 'true'` to set `base: '/rishav-cybersecurity-portfolio/'` for GitHub Pages and `base: '/'` for root hosting.
+- **GitHub Pages Deep-Route Fallback**: GitHub Pages does not support native SPA URL rewrites. To support direct links and browser refreshes on routes like `/projects/password-security-checker`, the GitHub Pages build script (`scripts/generate-gh-fallback.js`) copies the processed `dist/index.html` into `dist/404.html`. GitHub Pages serves `404.html` on unmatched routes while preserving the full URL pathname, allowing React Router (`<BrowserRouter basename={import.meta.env.BASE_URL}>`) to mount and resolve the correct project view.
+- **Root Hosting (Vercel / Netlify / Cloudflare Pages)**: Deploy using standard `npm run build` and configure your provider's standard SPA rewrite rule (e.g., `/* -> /index.html 200`).
 
 ## Customize before publishing
 

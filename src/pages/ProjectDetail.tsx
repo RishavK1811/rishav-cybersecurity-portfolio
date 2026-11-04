@@ -1,7 +1,8 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, CheckCircle2, Clock, Code2, FileCode2, Network, Shield } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Code2, FileCode2 } from 'lucide-react'
 import { useEffect, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { profile, projects } from '../data/portfolio'
+import { setProjectSeo } from '../utils/seo'
 
 type CaseSectionProps = {
   num: string
@@ -84,14 +85,7 @@ export function ProjectDetail() {
       : undefined
 
   useEffect(() => {
-    if (project) {
-      document.title = `${project.title} — ${profile.name} (${profile.shortName})`
-    } else {
-      document.title = `Project Not Found — ${profile.name} (${profile.shortName})`
-    }
-    return () => {
-      document.title = `${profile.name} (${profile.shortName}) — Cybersecurity & Systems Portfolio`
-    }
+    return setProjectSeo(project)
   }, [project])
 
   if (!project) {
@@ -231,7 +225,7 @@ has_special    = any(ch in special_characters for ch in password)`}</code>
     <article className="case-study">
       <header className="case-hero container">
         <div className="case-hero-grid">
-          <div className="case-hero-content flex flex-col justify-center">
+          <div className="case-hero-content flex flex-col">
             <Link className="back-link flex items-center gap-2" to="/#projects">
               <ArrowLeft aria-hidden="true" size={16} /> All projects
             </Link>
@@ -243,7 +237,13 @@ has_special    = any(ch in special_characters for ch in password)`}</code>
             </div>
             {project.github && (
               <div className="case-actions flex flex-wrap items-center gap-3 mt-6">
-                <a className="button" href={project.github} target="_blank" rel="noreferrer">
+                <a
+                  className="button"
+                  href={project.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`View ${project.title} repository on GitHub`}
+                >
                   <Code2 aria-hidden="true" size={17} /> View GitHub Repository
                 </a>
               </div>

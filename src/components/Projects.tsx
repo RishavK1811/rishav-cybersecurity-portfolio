@@ -88,11 +88,21 @@ export function Projects() {
               </div>
               <div className="project-actions flex flex-wrap items-center gap-3">
                 {featuredProject.github && (
-                  <a className="button" href={featuredProject.github} target="_blank" rel="noreferrer">
+                  <a
+                    className="button"
+                    href={featuredProject.github}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`View ${featuredProject.title} repository on GitHub`}
+                  >
                     <Code2 aria-hidden="true" size={17} /> View Repository
                   </a>
                 )}
-                <Link className="project-link" to={`/projects/${featuredProject.slug}`}>
+                <Link
+                  className="project-link"
+                  to={`/projects/${featuredProject.slug}`}
+                  aria-label={`Read case study for ${featuredProject.title}`}
+                >
                   Case Study <MoveRight aria-hidden="true" size={16} />
                 </Link>
               </div>
@@ -105,8 +115,8 @@ export function Projects() {
                   <span className="control-dot" />
                   <span className="control-dot" />
                 </div>
-                <span className="tech-preview-title">CLI Terminal · Rule Validator</span>
-                <span className="stat-value">Python 3 CLI · Verified</span>
+                <span className="tech-preview-title">CLI Terminal · Rule-Based Validation</span>
+                <span className="stat-value">Illustrative Terminal Output</span>
               </div>
               <div className="tech-preview-content">
                 <div className="tech-preview-suite">
@@ -117,13 +127,13 @@ export function Projects() {
                   <div className="tech-cli-terminal">
                     <div className="cli-line">Please enter your password: **********</div>
                     <div className="cli-result-pass mt-1.5 flex items-center gap-1.5">
-                      <span className="cli-status pass">Result: Strong Password! [PASS]</span>
+                      <span className="cli-status pass">Result: Meets basic rules [5/5 PASS]</span>
                     </div>
                     <div className="cli-divider my-2" />
                     <div className="cli-line">Please enter your password: mypass1</div>
                     <div className="cli-result-fail mt-1">
-                      <div className="cli-status fail">Result: Weak Password! [FAIL]</div>
-                      <div className="cli-subtext">Your password should include the following:</div>
+                      <div className="cli-status fail">Result: Does not meet basic rules [FAIL]</div>
+                      <div className="cli-subtext">Unmet configured checks:</div>
                       <div className="cli-rule-item">• At least 8 characters</div>
                       <div className="cli-rule-item">• At least 1 uppercase letter</div>
                       <div className="cli-rule-item">• At least 1 special character</div>
@@ -131,7 +141,7 @@ export function Projects() {
                   </div>
                   <div className="tech-metric-bar flex items-center gap-2">
                     <span className="metric-tag">Rule Engine</span>
-                    <span>Evaluates 5 core criteria: Length, Uppercase, Lowercase, Digits, Symbols</span>
+                    <span>Evaluates five configured checks: Length, Uppercase, Lowercase, Digits, Symbols</span>
                   </div>
                 </div>
               </div>
@@ -195,7 +205,11 @@ export function Projects() {
                         <ArrowUpRight aria-hidden="true" size={19} />
                       </a>
                     )}
-                    <Link className="project-link" to={`/projects/${project.slug}`}>
+                    <Link
+                      className="project-link"
+                      to={`/projects/${project.slug}`}
+                      aria-label={`View blueprint and scope for ${project.title}`}
+                    >
                       Blueprint &amp; Scope <MoveRight aria-hidden="true" size={17} />
                     </Link>
                   </div>

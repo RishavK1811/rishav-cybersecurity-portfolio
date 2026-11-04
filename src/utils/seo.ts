@@ -1,0 +1,153 @@
+import { profile, type Project } from '../data/portfolio'
+
+export const HOMEPAGE_SEO = {
+  title: `${profile.name} (${profile.shortName}) — Cybersecurity & Systems Portfolio`,
+  description:
+    'Rishav Kumar — BCA student (2025–2028) at CIMAGE Patna and aspiring SOC analyst. Defensive security portfolio with Python security tooling and lab blueprints.',
+  ogTitle: `${profile.name} (${profile.shortName}) — Cybersecurity & Systems Portfolio`,
+  ogDescription:
+    'Defensive security portfolio of Rishav Kumar (RK): verified Python security tooling, SOC fundamentals, networking labs, and practical coursework.',
+} as const
+
+let cachedSiteUrl: string | null = null
+
+export function getSiteUrl(): string {
+  if (cachedSiteUrl !== null) {
+    return cachedSiteUrl
+  }
+
+  if (typeof __APP_SITE_URL__ !== 'undefined' && __APP_SITE_URL__) {
+    cachedSiteUrl = __APP_SITE_URL__.replace(/\/+$/, '')
+    return cachedSiteUrl
+  }
+
+  if (import.meta.env.DEV && typeof window !== 'undefined' && window.location) {
+    const base = import.meta.env.BASE_URL.replace(/\/+$/, '')
+    cachedSiteUrl = `${window.location.origin}${base}`
+    return cachedSiteUrl
+  }
+
+  cachedSiteUrl = ''
+  return cachedSiteUrl
+}
+
+export function updateCanonical(url: string | null): void {
+  const existingLinks = document.querySelectorAll('link[rel="canonical"]')
+  if (url) {
+    if (existingLinks.length > 0) {
+      existingLinks[0].setAttribute('href', url)
+      for (let i = 1; i < existingLinks.length; i++) {
+        existingLinks[i].remove()
+      }
+    } else {
+      const link = document.createElement('link')
+      link.setAttribute('rel', 'canonical')
+      link.setAttribute('href', url)
+      document.head.appendChild(link)
+    }
+  } else {
+    existingLinks.forEach((el) => el.remove())
+  }
+}
+
+export function updateMetaTag(
+  selector: string,
+  attributeName: string,
+  attributeValue: string,
+  content: string | null,
+): void {
+  const existing = document.querySelectorAll(selector)
+  if (content !== null) {
+    if (existing.length > 0) {
+      existing[0].setAttribute('content', content)
+      for (let i = 1; i < existing.length; i++) {
+        existing[i].remove()
+      }
+    } else {
+      const meta = document.createElement('meta')
+      meta.setAttribute(attributeName, attributeValue)
+      meta.setAttribute('content', content)
+      document.head.appendChild(meta)
+    }
+  } else {
+    existing.forEach((el) => el.remove())
+  }
+}
+
+export function updateRobots(noindex: boolean): void {
+  if (noindex) {
+    updateMetaTag('meta[name="robots"]', 'name', 'robots', 'noindex, nofollow')
+  } else {
+    updateMetaTag('meta[name="robots"]', 'name', 'robots', null)
+  }
+}
+
+export function setHomepageSeo(): void {
+  const siteUrl = getSiteUrl()
+  document.title = HOMEPAGE_SEO.title
+  updateMetaTag('meta[name="description"]', 'name', 'description', HOMEPAGE_SEO.description)
+  updateMetaTag('meta[property="og:title"]', 'property', 'og:title', HOMEPAGE_SEO.ogTitle)
+  updateMetaTag('meta[property="og:description"]', 'property', 'og:description', HOMEPAGE_SEO.ogDescription)
+
+  if (siteUrl) {
+    const homeUrl = `${siteUrl}/`
+    updateCanonical(homeUrl)
+    updateMetaTag('meta[property="og:url"]', 'property', 'og:url', homeUrl)
+  } else {
+    updateCanonical(null)
+    updateMetaTag('meta[property="og:url"]', 'property', 'og:url', null)
+  }
+
+  updateRobots(false)
+}
+
+export function setProjectSeo(project: Project | undefined): () => void {
+  const siteUrl = getSiteUrl()
+
+  if (project) {
+    const projectTitle = `${project.title} — Case Study | ${profile.name} (${profile.shortName})`
+    document.title = projectTitle
+    updateMetaTag('meta[name="description"]', 'name', 'description', project.summary)
+    updateMetaTag('meta[property="og:title"]', 'property', 'og:title', projectTitle)
+    updateMetaTag('meta[property="og:description"]', 'property', 'og:description', project.summary)
+
+    if (siteUrl) {
+      const projectUrl = `${siteUrl}/projects/${project.slug}`
+      updateCanonical(projectUrl)
+      updateMetaTag('meta[property="og:url"]', 'property', 'og:url', projectUrl)
+    } else {
+      updateCanonical(null)
+      updateMetaTag('meta[property="og:url"]', 'property', 'og:url', null)
+    }
+
+    updateRobots(false)
+  } else {
+    const notFoundTitle = `Case Study Not Found | ${profile.name} (${profile.shortName})`
+    document.title = notFoundTitle
+    updateMetaTag('meta[name="description"]', 'name', 'description', HOMEPAGE_SEO.description)
+    updateMetaTag('meta[property="og:title"]', 'property', 'og:title', notFoundTitle)
+    updateMetaTag('meta[property="og:description"]', 'property', 'og:description', null)
+    updateCanonical(null)
+    updateMetaTag('meta[property="og:url"]', 'property', 'og:url', null)
+    updateRobots(true)
+  }
+
+  return () => {
+    setHomepageSeo()
+  }
+}
+
+export function setNotFoundSeo(): () => void {
+  const notFoundTitle = `Page Not Found | ${profile.name} (${profile.shortName})`
+  document.title = notFoundTitle
+  updateMetaTag('meta[name="description"]', 'name', 'description', HOMEPAGE_SEO.description)
+  updateMetaTag('meta[property="og:title"]', 'property', 'og:title', notFoundTitle)
+  updateMetaTag('meta[property="og:description"]', 'property', 'og:description', null)
+  updateCanonical(null)
+  updateMetaTag('meta[property="og:url"]', 'property', 'og:url', null)
+  updateRobots(true)
+
+  return () => {
+    setHomepageSeo()
+  }
+}

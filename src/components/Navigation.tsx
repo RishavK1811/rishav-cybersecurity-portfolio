@@ -10,11 +10,15 @@ export function Navigation() {
   const location = useLocation()
   const hasResume = Boolean(profile.resumePath)
 
-  const returnFocusToToggle = () => menuToggleRef.current?.focus()
+  const returnFocusToToggle = () => {
+    menuToggleRef.current?.focus({ preventScroll: true })
+  }
+
   const dismissMenu = () => {
     setOpen(false)
     window.requestAnimationFrame(returnFocusToToggle)
   }
+
   const closeMenuForNavigation = () => {
     setOpen(false)
   }
@@ -22,33 +26,10 @@ export function Navigation() {
   useEffect(() => {
     if (!open) return
 
-    const keepFocusInMenu = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
         dismissMenu()
-        return
-      }
-
-      if (event.key !== 'Tab') return
-
-      const focusableInPanel = Array.from(
-        menuPanelRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? []
-      )
-      const allFocusables = [menuToggleRef.current, ...focusableInPanel].filter(
-        (el): el is HTMLElement => Boolean(el)
-      )
-
-      if (allFocusables.length === 0) return
-
-      const first = allFocusables[0]
-      const last = allFocusables[allFocusables.length - 1]
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
       }
     }
 
@@ -70,17 +51,12 @@ export function Navigation() {
       }
     }
 
-    const focusFirstMenuItem = window.setTimeout(() => {
-      menuPanelRef.current?.querySelector<HTMLElement>('a[href], button:not([disabled])')?.focus()
-    }, 10)
-
-    window.addEventListener('keydown', keepFocusInMenu)
+    window.addEventListener('keydown', handleKeyDown)
     document.addEventListener('pointerdown', handlePointerDown)
     window.addEventListener('resize', handleResize)
 
     return () => {
-      window.clearTimeout(focusFirstMenuItem)
-      window.removeEventListener('keydown', keepFocusInMenu)
+      window.removeEventListener('keydown', handleKeyDown)
       document.removeEventListener('pointerdown', handlePointerDown)
       window.removeEventListener('resize', handleResize)
     }
@@ -111,8 +87,8 @@ export function Navigation() {
         >
           {open ? <X aria-hidden="true" size={20} /> : <Menu aria-hidden="true" size={20} />}
         </button>
-        {open && <button className="nav-backdrop" type="button" tabIndex={-1} aria-label="Close navigation menu" onClick={dismissMenu} />}
-        <div id="main-navigation" ref={menuPanelRef} className={`nav-panel ${open ? 'is-open' : ''}`} role={open ? 'dialog' : undefined} aria-modal={open || undefined} aria-label={open ? 'Primary navigation' : undefined}>
+        {open && <div className="nav-backdrop" aria-hidden="true" onClick={dismissMenu} />}
+        <div id="main-navigation" ref={menuPanelRef} className={`nav-panel ${open ? 'is-open' : ''}`}>
           <div className="nav-links flex items-center">
             {navItems.map((item) => (
               <Link key={item.href} to={homeHashHref(location.pathname, item.href)} onClick={closeMenuForNavigation}>
