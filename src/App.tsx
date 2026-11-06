@@ -27,6 +27,7 @@ function App() {
               </Routes>
             </main>
             <Footer compact={!isHome} />
+            <Analytics />
           </div>
         )
       }}
