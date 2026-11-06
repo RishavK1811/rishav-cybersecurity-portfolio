@@ -1,47 +1,127 @@
-import { Award, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Award, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { certifications } from '../data/portfolio'
 import { SectionHeading } from './SectionHeading'
 
 export function Certifications() {
   return (
-    <section id="certifications" className="section container certifications" aria-labelledby="certifications-title">
-      <SectionHeading
-        id="certifications-title"
-        eyebrow="Verified Credentials"
-        title={<>Evidence, when<br />it is earned.</>}
-        description="Completed credentials and verified achievements belong here. Learning-in-progress is labelled separately."
-      />
+    <section
+      id="certifications"
+      className="section container certifications"
+      aria-labelledby="certifications-title"
+    >
+      <div className="certifications-heading-wrap">
+        <SectionHeading
+          id="certifications-title"
+          eyebrow="Verified Credentials"
+          title={
+            <>
+              Evidence, when
+              <br />
+              it is earned.
+            </>
+          }
+          description="Formal certifications, specialized security training, and independently verifiable achievements from industry programs and academic partnerships."
+        />
+      </div>
+
       {certifications.length > 0 ? (
-        <div className="credential-list flex flex-col gap-3">
-          {certifications.map((credential) => (
-            <article className="credential" key={credential.title}>
-              <Award aria-hidden="true" size={21} />
-              <div className="credential-info">
-                <h3>{credential.title}</h3>
-                <p>
-                  {credential.issuer}
-                  {credential.issued ? ` · Issued ${credential.issued}` : ''}
-                  {credential.credentialId ? ` · ID: ${credential.credentialId}` : ''}
-                </p>
-              </div>
-              <div className="credential-meta-right flex items-center gap-3">
-                <span className={`credential-status ${credential.status}`}>
-                  {credential.status === 'completed' ? 'Completed' : 'In progress'}
-                </span>
-                {credential.url && (
-                  <a
-                    href={credential.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Verify ${credential.title} certificate`}
-                    className="credential-verify-link"
+        <div className="credential-list flex flex-col gap-4">
+          {certifications.map((credential) => {
+            const hasUrl = Boolean(credential.credentialUrl || credential.url)
+            const targetUrl = credential.credentialUrl || credential.url
+            const displayDate = credential.issueDate || credential.issued
+
+            return (
+              <article className="credential-card" key={credential.title}>
+                <div className="credential-card-top">
+                  <div className="credential-icon-wrap" aria-hidden="true">
+                    <Award size={20} className="credential-icon" />
+                  </div>
+
+                  <div className="credential-main">
+                    <div className="credential-header-row">
+                      <h3 className="credential-title">{credential.title}</h3>
+                      <div className="credential-badge-wrap">
+                        {credential.status === 'completed' || !credential.status ? (
+                          <span className="credential-status completed flex items-center gap-1.5">
+                            <ShieldCheck size={12} aria-hidden="true" />
+                            <span>Verified</span>
+                          </span>
+                        ) : (
+                          <span className="credential-status in-progress">
+                            In Progress
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <p className="credential-issuer">{credential.issuer}</p>
+
+                    <div className="credential-meta-row">
+                      {displayDate && (
+                        <span className="credential-meta-item">
+                          Issued {displayDate}
+                        </span>
+                      )}
+                      {displayDate && credential.credentialId && (
+                        <span className="credential-meta-sep" aria-hidden="true">
+                          ·
+                        </span>
+                      )}
+                      {credential.credentialId && (
+                        <span className="credential-meta-item">
+                          ID:{' '}
+                          <code className="credential-id-code">
+                            {credential.credentialId}
+                          </code>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {credential.skills && credential.skills.length > 0 && (
+                  <div
+                    className="credential-skills"
+                    aria-label="Security skill tags"
                   >
-                    <ArrowUpRight aria-hidden="true" size={18} />
-                  </a>
+                    {credential.skills.map((skill) => (
+                      <span key={skill} className="credential-skill-tag">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 )}
-              </div>
-            </article>
-          ))}
+
+                <div className="credential-action-row">
+                  {hasUrl && targetUrl ? (
+                    <a
+                      href={targetUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={`Verify ${credential.title} on official platform`}
+                      className="credential-verify-btn"
+                    >
+                      <span>Verify Credential</span>
+                      <ArrowUpRight aria-hidden="true" size={14} />
+                    </a>
+                  ) : (
+                    <div
+                      className="credential-verified-pill"
+                      aria-label="Verified Credential"
+                    >
+                      <CheckCircle2
+                        size={13}
+                        className="text-emerald-400"
+                        aria-hidden="true"
+                      />
+                      <span>[ Verified Credential ]</span>
+                    </div>
+                  )}
+                </div>
+              </article>
+            )
+          })}
         </div>
       ) : (
         <div className="honest-placeholder flex flex-col gap-4">
@@ -53,11 +133,10 @@ export function Certifications() {
             </div>
           </div>
           <p>
-            In alignment with ethical security practice, credentials and certifications are published here only once formally completed and independently verifiable (e.g., certificate ID or official transcript).
+            In alignment with ethical security practice, credentials and
+            certifications are published here only once formally completed and
+            independently verifiable.
           </p>
-          <div className="ledger-status">
-            <span>● Currently building foundational competencies through coursework &amp; self-directed study</span>
-          </div>
         </div>
       )}
     </section>

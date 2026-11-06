@@ -58,7 +58,7 @@ export function Hero() {
             </Link>
             {profile.resumePath && (
               <a className="button button-quiet" href={profile.resumePath} download>
-                Download Resume <FileDown aria-hidden="true" size={17} />
+                Download CV <FileDown aria-hidden="true" size={17} />
               </a>
             )}
           </div>

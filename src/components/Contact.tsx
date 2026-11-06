@@ -8,7 +8,7 @@ import {
   Send,
 } from 'lucide-react'
 import { useRef, useState, type FormEvent } from 'react'
-import { profile } from '../data/portfolio'
+import { contactMetadata, profile } from '../data/portfolio'
 
 type ContactField = 'name' | 'email' | 'subject' | 'message'
 type ContactErrors = Partial<Record<ContactField, string>>
@@ -21,13 +21,11 @@ interface FormState {
   message: string
 }
 
-const FALLBACK_ACCESS_KEY = 'e45a2f0e-8b3f-43c2-812a-3875e978b3ff'
-const WEB3FORMS_ACCESS_KEY =
-  import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || FALLBACK_ACCESS_KEY
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || ''
 
-if (!import.meta.env.VITE_WEB3FORMS_ACCESS_KEY && import.meta.env.DEV) {
+if (!WEB3FORMS_ACCESS_KEY && import.meta.env.DEV) {
   console.warn(
-    '[Web3Forms] Missing VITE_WEB3FORMS_ACCESS_KEY in environment variables. Falling back to default repository key.'
+    '[Web3Forms] Missing VITE_WEB3FORMS_ACCESS_KEY in environment variables. Please set it in your .env or Vercel dashboard.'
   )
 }
 
@@ -81,6 +79,14 @@ export function Contact() {
     if (Object.values(errors).some(Boolean)) {
       setFieldErrors(errors)
       window.setTimeout(() => errorSummaryRef.current?.focus(), 0)
+      return
+    }
+
+    if (!WEB3FORMS_ACCESS_KEY) {
+      setStatus('error')
+      setErrorMessage(
+        'Gateway configuration error: Missing access key. Please configure environment variable.'
+      )
       return
     }
 
@@ -146,18 +152,12 @@ export function Contact() {
             a conversation.
           </h2>
           <div className="contact-metadata-list">
-            <div className="contact-metadata-row">
-              <span className="contact-metadata-label">Opportunities</span>
-              <span className="contact-metadata-value">Internships &amp; Entry Roles</span>
-            </div>
-            <div className="contact-metadata-row">
-              <span className="contact-metadata-label">Focus</span>
-              <span className="contact-metadata-value">Defensive Security &amp; SOC</span>
-            </div>
-            <div className="contact-metadata-row">
-              <span className="contact-metadata-label">Communication</span>
-              <span className="contact-metadata-value">Direct &amp; Professional</span>
-            </div>
+            {contactMetadata.map((item) => (
+              <div key={item.label} className="contact-metadata-row">
+                <span className="contact-metadata-label">{item.label}</span>
+                <span className="contact-metadata-value">{item.value}</span>
+              </div>
+            ))}
           </div>
         </div>
 

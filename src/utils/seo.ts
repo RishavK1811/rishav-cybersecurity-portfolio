@@ -1,12 +1,12 @@
 import { profile, type Project } from '../data/portfolio'
 
 export const HOMEPAGE_SEO = {
-  title: `${profile.name} (${profile.shortName}) — Cybersecurity & Systems Portfolio`,
+  title: 'Rishav Kumar | Cybersecurity Portfolio & Security Analyst',
   description:
-    'Rishav Kumar — BCA student (2025–2028) at CIMAGE Patna and aspiring SOC analyst. Defensive security portfolio with Python security tooling and lab blueprints.',
-  ogTitle: `${profile.name} (${profile.shortName}) — Cybersecurity & Systems Portfolio`,
+    'Defensive cybersecurity portfolio of Rishav Kumar — BCA student (2025–2028) at CIMAGE Patna and aspiring SOC analyst. Featuring Python security tooling, SOC fundamentals, network protocols, and practical security labs.',
+  ogTitle: 'Rishav Kumar | Cybersecurity Portfolio & Security Analyst',
   ogDescription:
-    'Defensive security portfolio of Rishav Kumar (RK): verified Python security tooling, SOC fundamentals, networking labs, and practical coursework.',
+    'Explore the defensive cybersecurity portfolio of Rishav Kumar: Python security tooling, SOC fundamentals, network protocols, and security labs.',
 } as const
 
 let cachedSiteUrl: string | null = null

@@ -29,14 +29,29 @@ export type SkillGroup = {
   items: string[]
 }
 
-export type Certification = {
+export interface Certification {
   title: string
   issuer: string
-  issued?: string
+  issueDate: string
+  credentialUrl?: string
   credentialId?: string
+  skills: readonly string[]
+  status?: 'completed' | 'in-progress'
+  // Backward-compatibility aliases
+  issued?: string
   url?: string
-  status: 'completed' | 'in-progress'
 }
+
+export type ContactMetadataItem = {
+  label: string
+  value: string
+}
+
+export const contactMetadata: readonly ContactMetadataItem[] = [
+  { label: 'Opportunities', value: 'Internships & Entry Roles' },
+  { label: 'Focus', value: 'Defensive Security & SOC' },
+  { label: 'Communication', value: 'Direct & Professional' },
+] as const
 
 export const profile = {
   name: 'Rishav Kumar',
@@ -54,7 +69,7 @@ export const profile = {
   email: '',
   github: 'https://github.com/RishavK1811',
   linkedin: 'https://www.linkedin.com/in/rishav-kumar-317134368/',
-  resumePath: '',
+  resumePath: '/resume.pdf',
 } as const
 
 // Verified competencies across coursework, projects, and active lab study
@@ -182,25 +197,93 @@ export const journey = [
 ]
 
 // Genuine verified certifications from publicly indexed profile records
-export const certifications: Certification[] = [
+export const certifications: readonly Certification[] = [
   {
-    title: 'Foundations of Cybersecurity',
+    title: 'Google Cybersecurity Specialization',
     issuer: 'Google (Coursera)',
+    issueDate: 'April 2026',
     issued: 'April 2026',
     credentialId: 'N5VCSYWNT9ED',
-    url: 'https://www.coursera.org/account/accomplishments/verify/N5VCSYWNT9ED',
+    credentialUrl: 'https://coursera.org/share/4c00c4055d8f2f506809b69c0a60b2df',
+    url: 'https://coursera.org/share/4c00c4055d8f2f506809b69c0a60b2df',
+    skills: ['Network Security', 'Threat Intelligence', 'SIEM Tools', 'Python Automation', 'Linux', 'Security Controls'],
+    status: 'completed',
+  },
+  {
+    title: 'Certified LLM Security Professional (CLLMSP)',
+    issuer: 'Red Team Leaders',
+    issueDate: 'June 2026',
+    issued: 'June 2026',
+    credentialId: 'e235151c89c7f570',
+    credentialUrl: 'https://courses.redteamleaders.com/exam-completion/e235151c89c7f570',
+    url: 'https://courses.redteamleaders.com/exam-completion/e235151c89c7f570',
+    skills: ['LLM Security', 'Prompt Injection Defense', 'OWASP Top 10 for LLMs', 'MCP Security', 'AI Agent Hardening', 'AI Red Teaming'],
     status: 'completed',
   },
   {
     title: 'Pre Security Certificate',
     issuer: 'TryHackMe',
+    issueDate: 'May 2026',
     issued: 'May 2026',
+    credentialId: 'THM-PHHLLH1PVV',
+    credentialUrl: 'https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-PHHLLH1PVV.pdf',
+    url: 'https://tryhackme-certificates.s3-eu-west-1.amazonaws.com/THM-PHHLLH1PVV.pdf',
+    skills: ['Network Fundamentals', 'Linux CLI', 'Web Application Security', 'Packet Triage', 'Windows Security'],
     status: 'completed',
   },
   {
-    title: 'AI Masterclass – Google for Education AI Implementation Program 2026',
-    issuer: 'upEducators',
+    title: 'Cryptography and Network Security',
+    issuer: 'SWAYAM / NPTEL (IIT Kharagpur)',
+    issueDate: 'October 2026',
+    issued: 'October 2026',
+    credentialId: 'NPTEL26CS92S1',
+    credentialUrl: 'https://nptel.ac.in/noc/',
+    url: 'https://nptel.ac.in/noc/',
+    skills: ['Cryptography', 'Network Security', 'Symmetric & Asymmetric Ciphers', 'RSA & AES', 'SSL/TLS Handshake'],
+    status: 'completed',
+  },
+  {
+    title: 'JavaScript Training & Secure Web Programming',
+    issuer: 'SWAYAM Plus / SINE, IIT Bombay',
+    issueDate: 'October 2026',
+    issued: 'October 2026',
+    credentialId: '4410922MJP',
+    credentialUrl: 'https://swayam-plus.gov.in/',
+    url: 'https://swayam-plus.gov.in/',
+    skills: ['JavaScript', 'Secure Coding', 'DOM Security', 'API Integration', 'Data Validation'],
+    status: 'completed',
+  },
+  {
+    title: 'Certified in Cybersecurity (CC) — Self-Paced Training',
+    issuer: '(ISC)²',
+    issueDate: 'October 2026',
+    issued: 'October 2026',
+    credentialId: 'ISC2-CC-CANDIDATE',
+    credentialUrl: 'https://www.isc2.org/certifications/cc',
+    url: 'https://www.isc2.org/certifications/cc',
+    skills: ['Security Principles', 'Incident Response', 'Access Controls', 'Network Security', 'Security Operations'],
+    status: 'completed',
+  },
+  {
+    title: 'AI Masterclass – Google for Education AI Implementation Program',
+    issuer: 'upEducators / Google for Education',
+    issueDate: 'April 2026',
     issued: 'April 2026',
+    credentialId: 'UPED-AI-2026',
+    credentialUrl: 'https://www.upeducators.com/',
+    url: 'https://www.upeducators.com/',
+    skills: ['Artificial Intelligence', 'Prompt Engineering', 'Gemini & GenAI Tools', 'AI Safety & Ethics'],
+    status: 'completed',
+  },
+  {
+    title: 'Introduction to Cybersecurity',
+    issuer: 'Cisco Networking Academy',
+    issueDate: 'March 2026',
+    issued: 'March 2026',
+    credentialId: 'CISCO-CS-2026',
+    credentialUrl: 'https://www.credly.com/organizations/cisco/badges',
+    url: 'https://www.credly.com/organizations/cisco/badges',
+    skills: ['Cyber Defense', 'Threat Detection', 'Data Confidentiality', 'Network Defense', 'Incident Mitigation'],
     status: 'completed',
   },
 ]

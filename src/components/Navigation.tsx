@@ -1,4 +1,4 @@
-import { Menu, X } from 'lucide-react'
+import { FileDown, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { homeHashHref, navItems, profile } from '../data/portfolio'
@@ -98,7 +98,7 @@ export function Navigation() {
           </div>
           {hasResume && (
             <a className="button button-small" href={profile.resumePath} download onClick={closeMenuForNavigation}>
-              Resume
+              <FileDown aria-hidden="true" size={14} /> Download CV
             </a>
           )}
         </div>
