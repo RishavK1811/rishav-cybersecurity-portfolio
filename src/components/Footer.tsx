@@ -22,6 +22,16 @@ export function Footer({ compact = false }: FooterProps) {
             {navItems.map((item) => <Link to={homeHashHref(location.pathname, item.href)} key={item.href}>{item.label}</Link>)}
           </div>
         )}
+        <div className="footer-status-row flex items-center justify-center my-6">
+          <div
+            className="footer-security-badge"
+            role="status"
+            aria-label="Security Status: OPERATIONAL // SECURITY HEADERS: VERIFIED"
+          >
+            <span className="footer-status-dot" aria-hidden="true" />
+            <span className="footer-status-text">[ STATUS: OPERATIONAL // SECURITY HEADERS: VERIFIED ]</span>
+          </div>
+        </div>
         <div className="footer-bottom flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <span>© {new Date().getFullYear()} {profile.name}. Built with care.</span>
           {socialLinks.length > 0 && <div className="footer-socials flex items-center gap-2">{socialLinks.map(({ label, url, kind, opensInNewTab }) => { const Icon = socialIcons[kind]; return <a key={label} href={url} target={opensInNewTab ? '_blank' : undefined} rel={opensInNewTab ? 'noreferrer' : undefined} aria-label={label}><Icon aria-hidden="true" size={17} /></a> })}</div>}

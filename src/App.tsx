@@ -4,6 +4,7 @@ import { Footer } from './components/Footer'
 import { HashScrollRestorer } from './components/HashScrollRestorer'
 import { Navigation } from './components/Navigation'
 import { PageTransition } from './components/PageTransition'
+import { QuickConnectFab } from './components/QuickConnectFab'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { ProjectDetail } from './pages/ProjectDetail'
@@ -26,6 +27,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
+            <QuickConnectFab />
             <Footer compact={!isHome} />
             <Analytics />
           </div>

@@ -6,7 +6,6 @@ import { Hero } from '../components/Hero'
 import { Journey } from '../components/Journey'
 import { Projects } from '../components/Projects'
 import { Skills } from '../components/Skills'
-import { Terminal } from '../components/Terminal'
 import { setHomepageSeo } from '../utils/seo'
 
 export function Home() {
@@ -17,7 +16,6 @@ export function Home() {
   return (
     <>
       <Hero />
-      <Terminal />
       <About />
       <Skills />
       <Projects />

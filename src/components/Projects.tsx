@@ -1,39 +1,75 @@
 import { ArrowUpRight, Code2, FlaskConical, MoveRight, ShieldCheck } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { projects } from '../data/portfolio'
+import { projects, type Project } from '../data/portfolio'
 import { useReveal } from '../hooks/useReveal'
 import { SectionHeading } from './SectionHeading'
 
-type FilterCategory = 'all' | 'implemented' | 'network-soc' | 'web-security'
+export function getProjectDomainCategory(p: Project): string {
+  const text = `${p.slug} ${p.category} ${p.title} ${p.summary} ${p.tools.join(' ')}`.toLowerCase()
+  if (
+    text.includes('log') ||
+    text.includes('soc') ||
+    text.includes('auth') ||
+    text.includes('blue team')
+  ) {
+    return 'Blue Team & SOC'
+  }
+  if (text.includes('network') || text.includes('scanner') || text.includes('port')) {
+    return 'Network Analysis'
+  }
+  if (
+    text.includes('password') ||
+    text.includes('python') ||
+    text.includes('script') ||
+    text.includes('automation')
+  ) {
+    return 'Automation & Scripts'
+  }
+  if (text.includes('web') || text.includes('http') || text.includes('request')) {
+    return 'Web Security & Labs'
+  }
+  return 'Security Tooling'
+}
 
-const FILTER_OPTIONS: { id: FilterCategory; label: string }[] = [
-  { id: 'all', label: 'All Work (4)' },
-  { id: 'implemented', label: 'Implemented Tooling (1)' },
-  { id: 'network-soc', label: 'Network & SOC Labs (2)' },
-  { id: 'web-security', label: 'Web Security Lab (1)' },
-]
+interface FilterTab {
+  id: string
+  label: string
+  count: number
+}
 
 export function Projects() {
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>('all')
+  const [activeFilter, setActiveFilter] = useState<string>('all')
   const { ref, revealed } = useReveal<HTMLElement>()
 
-  const featuredProject = projects.find((p) => p.slug === 'password-security-checker') ?? projects[0]
+  // Dynamically derive filter tabs and live counts from project data
+  const filterTabs = useMemo<FilterTab[]>(() => {
+    const categories = Array.from(new Set(projects.map(getProjectDomainCategory)))
+    return [
+      { id: 'all', label: 'All', count: projects.length },
+      ...categories.map((cat) => ({
+        id: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        label: cat,
+        count: projects.filter((p) => getProjectDomainCategory(p) === cat).length,
+      })),
+    ]
+  }, [])
+
+  const selectedTab = filterTabs.find((t) => t.id === activeFilter)
+
+  const featuredProject =
+    projects.find((p) => p.slug === 'password-security-checker') ?? projects[0]
   const allLabProjects = projects.filter((p) => p.slug !== 'password-security-checker')
 
+  // Determine whether featured project matches active filter
   const showFeatured =
-    activeFilter === 'all' || activeFilter === 'implemented'
+    activeFilter === 'all' ||
+    (featuredProject && getProjectDomainCategory(featuredProject) === selectedTab?.label)
 
+  // Filter remaining lab projects
   const filteredLabs = allLabProjects.filter((project) => {
     if (activeFilter === 'all') return true
-    if (activeFilter === 'implemented') return false
-    if (activeFilter === 'network-soc') {
-      return project.slug === 'network-scanner' || project.slug === 'security-log-analyzer'
-    }
-    if (activeFilter === 'web-security') {
-      return project.slug === 'web-security-practice-lab'
-    }
-    return true
+    return getProjectDomainCategory(project) === selectedTab?.label
   })
 
   return (
@@ -47,19 +83,27 @@ export function Projects() {
         <SectionHeading
           id="projects-title"
           eyebrow="Selected Work"
-          title={<>Projects with<br />room for proof.</>}
+          title={
+            <>
+              Projects with
+              <br />
+              room for proof.
+            </>
+          }
           description="Implemented security utilities alongside structured lab blueprints. Verified repositories link directly to source code; conceptual lab blueprints are explicitly marked."
         />
+        {/* Dynamic Category Filter Tabs with Live Counter Badges */}
         <div className="project-filter-bar" role="group" aria-label="Filter projects by category">
-          {FILTER_OPTIONS.map((option) => (
+          {filterTabs.map((tab) => (
             <button
-              key={option.id}
+              key={tab.id}
               type="button"
-              className={`filter-chip ${activeFilter === option.id ? 'is-active' : ''}`}
-              aria-pressed={activeFilter === option.id}
-              onClick={() => setActiveFilter(option.id)}
+              className={`filter-chip ${activeFilter === tab.id ? 'is-active' : ''}`}
+              aria-pressed={activeFilter === tab.id}
+              onClick={() => setActiveFilter(tab.id)}
             >
-              {option.label}
+              <span className="filter-chip-label">{tab.label}</span>
+              <span className="filter-chip-count">[{tab.count}]</span>
             </button>
           ))}
         </div>
@@ -68,7 +112,11 @@ export function Projects() {
       {/* Featured Implemented Project */}
       {showFeatured && featuredProject && (
         <div className="featured-project-container mt-10">
-          <article className="project-card featured-project-card">
+          <article
+            className="project-card featured-project-card stagger-card filter-card-animate"
+            key={`${featuredProject.slug}-${activeFilter}`}
+            style={{ '--stagger-index': 0 } as CSSProperties}
+          >
             <div className="project-card-info">
               <div>
                 <div className="project-meta-top flex items-center gap-2.5">
@@ -158,15 +206,27 @@ export function Projects() {
               <FlaskConical aria-hidden="true" size={16} className="text-[#b5a0f2]" />
               <span className="eyebrow m-0 text-xs">Active Research &amp; Practice</span>
             </div>
-            <h3 className="text-xl font-bold text-[#f5f2f8]">Labs in Progress</h3>
+            <h3 className="text-xl font-bold text-[#f5f2f8]">
+              {activeFilter === 'all'
+                ? 'Labs in Progress'
+                : `${selectedTab?.label ?? ''} Projects`}
+            </h3>
             <p className="labs-description mt-2 text-sm text-[#aaa4b5] max-w-2xl">
-              Controlled architectural blueprints and planned utilities exploring network discovery, authentication log parsing, and defensive HTTP boundaries in isolated lab environments.
+              {activeFilter === 'all'
+                ? 'Controlled architectural blueprints and planned utilities exploring network discovery, authentication log parsing, and defensive HTTP boundaries in isolated lab environments.'
+                : `Showing ${filteredLabs.length} ${
+                    filteredLabs.length === 1 ? 'project' : 'projects'
+                  } cataloged in this specialization.`}
             </p>
           </div>
 
           <div className="project-cards">
-            {filteredLabs.map((project) => (
-              <article className="project-card lab-card" key={project.slug}>
+            {filteredLabs.map((project, index) => (
+              <article
+                className="project-card lab-card stagger-card filter-card-animate"
+                key={`${project.slug}-${activeFilter}`}
+                style={{ '--stagger-index': showFeatured ? index + 1 : index } as CSSProperties}
+              >
                 <div className="project-card-info">
                   <div>
                     <div className="project-meta-top flex items-center gap-2.5">
@@ -248,90 +308,89 @@ export function Projects() {
                           </div>
                           <div className="tech-matrix-row">
                             <span className="host-name">192.168.1.1 [GW]</span>
-                            <span className="host-rtt">0.4ms</span>
-                            <span className="port-state port-filtered">FILTERED</span>
-                            <span className="port-state port-open">OPEN (HTTP/2)</span>
-                            <span className="port-state port-open">OPEN (TLS 1.3)</span>
+                            <span>1.2ms</span>
+                            <span className="port-closed">CLOSED</span>
+                            <span className="port-open">OPEN</span>
+                            <span className="port-open">OPEN</span>
                           </div>
                           <div className="tech-matrix-row">
-                            <span className="host-name">192.168.1.10 [SRV]</span>
-                            <span className="host-rtt">1.1ms</span>
-                            <span className="port-state port-open">OPEN (OpenSSH)</span>
-                            <span className="port-state port-closed">CLOSED</span>
-                            <span className="port-state port-closed">CLOSED</span>
+                            <span className="host-name">192.168.1.15 [SRV]</span>
+                            <span>0.8ms</span>
+                            <span className="port-open">OPEN</span>
+                            <span className="port-closed">CLOSED</span>
+                            <span className="port-open">OPEN</span>
                           </div>
                           <div className="tech-matrix-row">
-                            <span className="host-name">192.168.1.24 [LAB]</span>
-                            <span className="host-rtt">0.8ms</span>
-                            <span className="port-state port-filtered">FILTERED</span>
-                            <span className="port-state port-open">OPEN (DevApp)</span>
-                            <span className="port-state port-closed">CLOSED</span>
+                            <span className="host-name">192.168.1.42 [DB]</span>
+                            <span>2.4ms</span>
+                            <span className="port-open">OPEN</span>
+                            <span className="port-closed">CLOSED</span>
+                            <span className="port-closed">CLOSED</span>
                           </div>
                         </div>
                         <div className="tech-metric-bar flex items-center gap-2">
-                          <span className="metric-tag">Spec Model</span>
-                          <span>Illustrative port discovery matrix · Simulated RFC 1918 virtual lab</span>
+                          <span className="metric-tag">Spec Mode</span>
+                          <span>SYN Stealth Discovery · ARP Cache Query · Service Fingerprinting</span>
                         </div>
                       </div>
                     ) : project.slug === 'security-log-analyzer' ? (
                       <div className="tech-preview-suite">
                         <div className="tech-cmd-line flex items-center gap-2">
                           <span className="tech-prompt">$</span>
-                          <span className="tech-cmd">./log-analyzer --source /var/log/auth.log</span>
+                          <span className="tech-cmd">python3 parse_logs.py --input /var/log/auth.log</span>
                         </div>
-                        <div className="tech-events-stream">
-                          <div className="tech-event-item">
-                            <span className="event-time">14:22:01.402</span>
-                            <span className="event-badge badge-warn">AUTH_FAIL</span>
-                            <span className="event-desc">src=10.0.0.45:51224 user=admin [Failed password]</span>
+                        <div className="tech-log-stream">
+                          <div className="log-line-item log-info">
+                            <span className="log-timestamp">[10:14:22]</span>
+                            <span className="log-badge-info">INFO</span>
+                            <span className="log-msg">sshd: Listening on 0.0.0.0 port 22.</span>
                           </div>
-                          <div className="tech-event-item">
-                            <span className="event-time">14:22:03.811</span>
-                            <span className="event-badge badge-warn">AUTH_FAIL</span>
-                            <span className="event-desc">src=10.0.0.45:51228 user=root [Invalid credential]</span>
+                          <div className="log-line-item log-warn">
+                            <span className="log-timestamp">[10:15:01]</span>
+                            <span className="log-badge-warn">WARN</span>
+                            <span className="log-msg">Failed password for invalid user admin from 192.168.1.104 port 49152</span>
                           </div>
-                          <div className="tech-event-item event-spike">
-                            <span className="event-time">14:22:05.190</span>
-                            <span className="event-badge badge-alert">SPIKE_TRIGGER</span>
-                            <span className="event-desc">rule=MultipleAuthFailuresThreshold count=5/30s</span>
+                          <div className="log-line-item log-alert">
+                            <span className="log-timestamp">[10:15:04]</span>
+                            <span className="log-badge-alert">ALERT</span>
+                            <span className="log-msg">Brute-force pattern identified: 5 attempts / 3s from 192.168.1.104</span>
                           </div>
                         </div>
                         <div className="tech-metric-bar flex items-center gap-2">
-                          <span className="metric-tag">Spec Model</span>
-                          <span>Illustrative log anomaly parser · Synthetic test events</span>
+                          <span className="metric-tag">Ingest Engine</span>
+                          <span>Syslog RFC 5424 Format · Regex Anomaly Extraction · Window Thresholding</span>
                         </div>
                       </div>
                     ) : (
                       <div className="tech-preview-suite">
                         <div className="tech-cmd-line flex items-center gap-2">
                           <span className="tech-prompt">$</span>
-                          <span className="tech-cmd">curl -i -X POST http://localhost:8080/api/transfer</span>
+                          <span className="tech-cmd">curl -I https://sandbox.local/api/v1/auth</span>
                         </div>
-                        <div className="tech-sandbox-grid">
-                          <div className="sandbox-card sandbox-req">
-                            <div className="sandbox-card-header">
-                              <span className="sandbox-tag tag-req">TEST REQUEST</span>
-                              <span className="sandbox-method">POST /api/transfer</span>
-                            </div>
-                            <div className="sandbox-body">
-                              <div>Origin: https://untrusted.test</div>
-                              <div className="sandbox-warn">CSRF Token: [MISSING / INVALID]</div>
-                            </div>
+                        <div className="tech-sandbox-terminal">
+                          <div className="sandbox-header-row ok">
+                            <span className="sandbox-status">HTTP/1.1 200 OK</span>
                           </div>
-                          <div className="sandbox-card sandbox-res">
-                            <div className="sandbox-card-header">
-                              <span className="sandbox-tag tag-res">DEFENSIVE RESPONSE</span>
-                              <span className="sandbox-status">403 FORBIDDEN</span>
-                            </div>
-                            <div className="sandbox-body">
-                              <div>CSP: default-src &apos;self&apos; · XFO: DENY</div>
-                              <div>X-Content-Type-Options: nosniff</div>
-                            </div>
+                          <div className="sandbox-body-row">
+                            <span className="header-key">Content-Security-Policy:</span>
+                            <span className="header-val">default-src &apos;self&apos;; frame-ancestors &apos;none&apos;</span>
+                          </div>
+                          <div className="sandbox-body-row">
+                            <span className="header-key">Strict-Transport-Security:</span>
+                            <span className="header-val">max-age=31536000; includeSubDomains</span>
+                          </div>
+                          <div className="sandbox-body-row">
+                            <span className="header-key">X-Content-Type-Options:</span>
+                            <span className="header-val">nosniff</span>
+                          </div>
+                          <div className="sandbox-body-row">
+                            <span className="header-key">X-Frame-Options:</span>
+                            <span className="header-val">DENY</span>
                           </div>
                         </div>
                         <div className="tech-metric-bar flex items-center gap-2">
-                          <span className="metric-tag">Spec Model</span>
-                          <span>Defensive HTTP header verification · Local sandbox suite</span>
+                          <span className="metric-tag">Boundary Inspector</span>
+                          <span>HTTP Security Response Headers · CORS Origin Audit · Cookie SameSite Policy</span>
                         </div>
                       </div>
                     )}
@@ -340,6 +399,13 @@ export function Projects() {
               </article>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!showFeatured && filteredLabs.length === 0 && (
+        <div className="honest-placeholder mt-10">
+          <p>No projects found in this category.</p>
         </div>
       )}
     </section>

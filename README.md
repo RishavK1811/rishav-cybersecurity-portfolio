@@ -122,11 +122,11 @@ Open `http://localhost:5173` in your browser.
 ## Project Structure
 
 ```text
-├── public/                 # Static public assets, textures & sitemap
+├── public/                 # Static public assets, resume & sitemap
 │   ├── favicon.svg         # SVG favicon
+│   ├── resume.pdf          # Curated resume CV
 │   ├── robots.txt          # Crawler instructions
-│   ├── sitemap.xml         # Search index sitemap
-│   └── textures/earth/     # 3D Globe Earth day/cloud/specular textures
+│   └── sitemap.xml         # Search index sitemap
 ├── scripts/                # Build-time automated scripts
 │   └── generate-gh-fallback.js # SPA routing fallback & sitemap generator
 ├── src/

@@ -1,4 +1,4 @@
-import { Maximize2, Minimize2, Terminal as TerminalIcon } from 'lucide-react'
+import { Terminal as TerminalIcon } from 'lucide-react'
 import {
   useCallback,
   useEffect,
@@ -6,7 +6,8 @@ import {
   useState,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react'
-import { profile, projects, skills, certifications } from '../data/portfolio'
+import { Link } from 'react-router-dom'
+import { profile, projects, skills } from '../data/portfolio'
 
 interface TerminalLine {
   id: number
@@ -16,368 +17,257 @@ interface TerminalLine {
 }
 
 const PROMPT = 'visitor@rishav-sec:~$ '
-const MAX_HISTORY = 50
+const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'projects', 'clear'] as const
 
-let lineIdCounter = 0
+let lineCounter = 0
 function nextId(): number {
-  return ++lineIdCounter
+  return ++lineCounter
 }
 
 function line(type: TerminalLine['type'], content: string, href?: string): TerminalLine {
   return { id: nextId(), type, content, href }
 }
 
-function lines(type: TerminalLine['type'], contents: string[]): TerminalLine[] {
-  return contents.map((c) => line(type, c))
-}
-
-function cmdHelp(): TerminalLine[] {
-  return lines('output', [
-    '',
-    '  Available commands:',
-    '  ──────────────────────────────────────────────────────────',
-    '  help             List all valid interactive commands',
-    '  whoami           Display Rishav\'s cybersecurity analyst profile',
-    '  skills           Print categorized offensive/defensive tools',
-    '  projects         List active security projects with links',
-    '  certs            Display verified security certifications & links',
-    '  cat contact.txt  Show contact channels and social coordinates',
-    '  download-cv      Trigger immediate resume/CV download',
-    '  clear            Clear the terminal screen',
-    '',
-  ])
-}
-
-function cmdCerts(): TerminalLine[] {
-  const output: TerminalLine[] = [
-    line('output', ''),
-    line('system', '  Verified Certifications & Credentials:'),
-    line('output', '  ──────────────────────────────────────────────────────────'),
-  ]
-
-  for (const cert of certifications) {
-    const dateStr = cert.issueDate ? ` (${cert.issueDate})` : ''
-    output.push(line('output', `  ▸ ${cert.title}${dateStr}`))
-    output.push(line('output', `    Issuer: ${cert.issuer}${cert.credentialId ? ` · ID: ${cert.credentialId}` : ''}`))
-    const targetUrl = cert.credentialUrl || cert.url
-    if (targetUrl) {
-      output.push(line('link', `    → Verify: ${targetUrl}`, targetUrl))
-    }
-    output.push(line('output', ''))
-  }
-
-  return output
-}
-
-function cmdWhoami(): TerminalLine[] {
-  return lines('output', [
-    '',
-    `  ╭─ Identity: ${profile.name} (${profile.shortName})`,
-    `  │  Role    : ${profile.role}`,
-    '  │',
-    `  │  Academic: ${profile.academicStatus} (${profile.educationPeriod})`,
-    `  │  Campus  : ${profile.institution}`,
-    '  │',
-    '  │  Focus   : Defensive Security · SOC Operations · Protocol Triage',
-    '  │  Tooling : Python 3 · Linux (Debian/Kali) · SQL · Bash · Wireshark',
-    '  │  Status  : Open to cybersecurity internships & entry analyst roles',
-    '  ╰─────────────────────────────────────────────────────────',
-    '',
-  ])
-}
-
-function cmdSkills(): TerminalLine[] {
-  const output: TerminalLine[] = [line('output', '')]
-  for (const group of skills) {
-    output.push(line('system', `  [${group.title}]`))
-    output.push(line('output', `    ${group.items.join('  ·  ')}`))
-    output.push(line('output', ''))
-  }
-  return output
-}
-
-function cmdProjects(): TerminalLine[] {
-  const published = projects.filter(
-    (p) =>
-      !p.status.toLowerCase().includes('draft') &&
-      !p.status.toLowerCase().includes('placeholder')
-  )
-  const drafts = projects.filter(
-    (p) =>
-      p.status.toLowerCase().includes('draft') ||
-      p.status.toLowerCase().includes('placeholder')
-  )
-
-  const output: TerminalLine[] = [
-    line('output', ''),
-    line('system', '  Verified Security Projects:'),
-    line('output', '  ──────────────────────────────────────────────────────────'),
-  ]
-
-  for (const p of published) {
-    output.push(line('output', `  ▸ ${p.title} [${p.category}]`))
-    output.push(line('output', `    ${p.summary}`))
-    if (p.github) {
-      output.push(line('link', `    → GitHub Repository: ${p.github}`, p.github))
-    }
-    output.push(line('output', ''))
-  }
-
-  if (drafts.length > 0) {
-    output.push(line('output', `  In-Progress Labs (${drafts.length}): ${drafts.map((d) => d.title).join(', ')}`))
-    output.push(line('output', ''))
-  }
-
-  return output
-}
-
-function cmdContact(): TerminalLine[] {
-  const output: TerminalLine[] = [
-    line('output', ''),
-    line('system', '  ┌─ cat contact.txt'),
-    line('output', '  │'),
-  ]
-
-  if (profile.email) {
-    output.push(line('output', `  │  Email   : ${profile.email}`))
-  } else {
-    output.push(line('output', '  │  Email   : [Direct Web3Forms transmission form active below]'))
-  }
-
-  if (profile.github) {
-    output.push(line('link', `  │  GitHub  : ${profile.github}`, profile.github))
-  }
-  if (profile.linkedin) {
-    output.push(line('link', `  │  LinkedIn: ${profile.linkedin}`, profile.linkedin))
-  }
-
-  output.push(line('output', '  │'))
-  output.push(line('system', '  └─────────────────────────────────────────────────────────'))
-  output.push(line('output', ''))
-  return output
-}
-
-function cmdDownloadCv(): TerminalLine[] {
-  const resumeUrl = profile.resumePath || '/resume.pdf'
-  const anchor = document.createElement('a')
-  anchor.href = resumeUrl
-  anchor.download = 'Rishav_Kumar_CV.pdf'
-  document.body.appendChild(anchor)
-  anchor.click()
-  document.body.removeChild(anchor)
-
-  return lines('output', [
-    '',
-    '  [+] Executing: GET /resume.pdf -> Rishav_Kumar_CV.pdf',
-    '  [+] Status: 200 OK (Packet stream received)',
-    '  [+] Download initiated successfully. Check your browser downloads.',
-    '',
-  ])
-}
-
-function executeCommand(raw: string): TerminalLine[] {
-  const trimmed = raw.trim()
-  if (!trimmed) return []
-
-  const lower = trimmed.toLowerCase()
-
-  switch (lower) {
-    case 'help':
-      return cmdHelp()
-    case 'whoami':
-      return cmdWhoami()
-    case 'skills':
-      return cmdSkills()
-    case 'projects':
-      return cmdProjects()
-    case 'certs':
-    case 'certifications':
-      return cmdCerts()
-    case 'cat contact.txt':
-      return cmdContact()
-    case 'download-cv':
-      return cmdDownloadCv()
-    case 'clear':
-      return []
-    default:
-      return [
-        line('error', `command not found: ${trimmed}. Type 'help' for available commands.`),
-      ]
-  }
-}
-
-function getWelcomeBanner(): TerminalLine[] {
-  return lines('system', [
-    '╔══════════════════════════════════════════════════════════════════╗',
-    '║  RISHAV-SEC KERNEL v5.19.0-defensive-amd64 (tty1)                ║',
-    '║  Type "help" to view available security commands                 ║',
-    '║  Try: whoami, skills, projects, certs, cat contact.txt, download-cv ║',
-    '╚══════════════════════════════════════════════════════════════════╝',
-    '',
-  ])
-}
+const INITIAL_LINES: TerminalLine[] = [
+  line('system', 'SOC Workstation v2.6.4 (x86_64-antigravity-linux)'),
+  line('system', 'Type "help" to view commands or click the chips below.'),
+  line('system', '──────────────────────────────────────────────────────'),
+]
 
 export function Terminal() {
-  const [history, setHistory] = useState<TerminalLine[]>(getWelcomeBanner)
+  const [history, setHistory] = useState<TerminalLine[]>(INITIAL_LINES)
   const [input, setInput] = useState('')
-  const [cmdHistory, setCmdHistory] = useState<string[]>([])
+  const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
-  const [isCollapsed, setIsCollapsed] = useState(false)
-
+  const terminalBodyRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+  const scrollToBottom = useCallback(() => {
+    if (terminalBodyRef.current) {
+      terminalBodyRef.current.scrollTop = terminalBodyRef.current.scrollHeight
     }
-  }, [history])
-
-  const focusInput = useCallback(() => {
-    inputRef.current?.focus()
   }, [])
 
-  const handleSubmit = useCallback(() => {
-    const command = input.trim()
-    const inputLine = line('input', `${PROMPT}${input}`)
-    const newHistory = [...history, inputLine]
+  useEffect(() => {
+    scrollToBottom()
+  }, [history, scrollToBottom])
 
-    if (command) {
-      setCmdHistory((prev) => {
-        const filtered = prev.filter((c) => c !== command)
-        return [...filtered, command].slice(-MAX_HISTORY)
-      })
-    }
+  const executeCommand = (rawCommand: string) => {
+    const trimmed = rawCommand.trim()
+    const cmd = trimmed.toLowerCase()
 
-    if (command.toLowerCase() === 'clear') {
-      setHistory([])
-      setInput('')
-      setHistoryIndex(-1)
+    if (!trimmed) {
+      setHistory((prev) => [...prev, line('input', `${PROMPT}`)])
       return
     }
 
-    const output = executeCommand(command)
-    setHistory([...newHistory, ...output])
-    setInput('')
+    setCommandHistory((prev) => [...prev, trimmed])
     setHistoryIndex(-1)
-  }, [input, history])
 
-  const handleKeyDown = useCallback(
-    (e: ReactKeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        handleSubmit()
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        if (cmdHistory.length === 0) return
-        const newIndex =
-          historyIndex === -1
-            ? cmdHistory.length - 1
-            : Math.max(0, historyIndex - 1)
-        setHistoryIndex(newIndex)
-        setInput(cmdHistory[newIndex])
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        if (historyIndex === -1) return
-        const newIndex = historyIndex + 1
-        if (newIndex >= cmdHistory.length) {
-          setHistoryIndex(-1)
-          setInput('')
-        } else {
-          setHistoryIndex(newIndex)
-          setInput(cmdHistory[newIndex])
-        }
-      } else if (e.key === 'l' && e.ctrlKey) {
-        e.preventDefault()
-        setHistory([])
+    const inputLine = line('input', `${PROMPT}${trimmed}`)
+
+    if (cmd === 'clear') {
+      setHistory(INITIAL_LINES)
+      return
+    }
+
+    let outputLines: TerminalLine[] = []
+
+    if (cmd === 'help') {
+      outputLines = [
+        line('output', 'Available commands:'),
+        line('output', '  whoami     - Display profile summary & defensive SOC focus'),
+        line('output', '  skills     - List security tools, systems & protocols'),
+        line('output', '  projects   - Show verified portfolio projects with links'),
+        line('output', '  clear      - Clear terminal screen history'),
+        line('output', '  help       - Print this command directory'),
+      ]
+    } else if (cmd === 'whoami') {
+      outputLines = [
+        line('output', `USER        : ${profile.name} (${profile.shortName})`),
+        line('output', `DISCIPLINE  : ${profile.role}`),
+        line('output', `ACADEMIC    : ${profile.academicStatus} · ${profile.institution}`),
+        line('output', `STATUS      : Online // Defense & Incident Triage Lab Mode`),
+      ]
+    } else if (cmd === 'skills') {
+      const topSkills = skills.flatMap((g) => g.items).slice(0, 8).join(', ')
+      outputLines = [
+        line('output', 'VERIFIED CYBERSECURITY ARSENAL:'),
+        line('output', '  • Defensive & SOC : Threat Intel, SIEM Triage, Event Logs, Hardening'),
+        line('output', '  • Networking      : TCP/IP, CIDR Subnetting, Wireshark, DNS, TLS/SSL'),
+        line('output', '  • Systems         : Linux (Debian/Kali), Windows Admin, Process Auditing'),
+        line('output', '  • Scripting       : Python 3, Bash, SQL, Socket Programming'),
+        line('system', `  Top indexed tools: ${topSkills}`),
+      ]
+    } else if (cmd === 'projects') {
+      outputLines = [
+        line('output', 'ACTIVE SECURITY TOOLING & LAB PROJECTS:'),
+        ...projects.map((p, idx) =>
+          line(
+            'link',
+            `  [${idx + 1}] ${p.title} (${p.category})`,
+            `/projects/${p.slug}`
+          )
+        ),
+        line('system', '  Click any project above to inspect the case study.'),
+      ]
+    } else {
+      outputLines = [
+        line(
+          'error',
+          `Command not found: "${trimmed}". Type "help" for a list of commands.`
+        ),
+      ]
+    }
+
+    setHistory((prev) => [...prev, inputLine, ...outputLines])
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    executeCommand(input)
+    setInput('')
+  }
+
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      if (commandHistory.length === 0) return
+      const nextIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1)
+      setHistoryIndex(nextIndex)
+      setInput(commandHistory[nextIndex] ?? '')
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      if (historyIndex === -1) return
+      const nextIndex = historyIndex + 1
+      if (nextIndex >= commandHistory.length) {
+        setHistoryIndex(-1)
+        setInput('')
+      } else {
+        setHistoryIndex(nextIndex)
+        setInput(commandHistory[nextIndex] ?? '')
       }
-    },
-    [handleSubmit, cmdHistory, historyIndex]
-  )
+    }
+  }
 
   return (
-    <section className="terminal-section container" aria-label="Interactive Cybersecurity Terminal">
-      <div className="interactive-terminal">
-        {/* Terminal Header Bar */}
-        <div className="terminal-titlebar">
-          <div className="terminal-titlebar-left flex items-center gap-3">
-            <div className="terminal-titlebar-dots" aria-hidden="true">
-              <span className="terminal-dot terminal-dot-red" />
-              <span className="terminal-dot terminal-dot-yellow" />
-              <span className="terminal-dot terminal-dot-green" />
-            </div>
-            <span className="terminal-titlebar-text flex items-center gap-2">
-              <TerminalIcon size={13} className="text-emerald-400" aria-hidden="true" />
-              <span>visitor@rishav-sec: ~ (bash)</span>
-            </span>
-          </div>
-
-          <div className="terminal-titlebar-actions">
-            <button
-              type="button"
-              className="terminal-titlebar-btn"
-              onClick={() => setIsCollapsed((c) => !c)}
-              aria-label={isCollapsed ? 'Expand terminal' : 'Collapse terminal'}
-              title={isCollapsed ? 'Expand terminal' : 'Collapse terminal'}
-            >
-              {isCollapsed ? <Maximize2 size={12} aria-hidden="true" /> : <Minimize2 size={12} aria-hidden="true" />}
-            </button>
-          </div>
+    <div
+      className="mini-terminal-wrapper bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-lg overflow-hidden shadow-2xl font-mono text-xs w-full"
+      onClick={() => inputRef.current?.focus()}
+    >
+      {/* Window Header */}
+      <div className="terminal-header flex items-center justify-between px-3.5 py-2.5 bg-slate-950/80 border-b border-slate-800 select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-3 h-3 rounded-full bg-red-500/90 inline-block" aria-hidden="true" />
+          <span className="w-3 h-3 rounded-full bg-yellow-500/90 inline-block" aria-hidden="true" />
+          <span className="w-3 h-3 rounded-full bg-green-500/90 inline-block" aria-hidden="true" />
+          <span className="terminal-title text-slate-400 font-semibold text-[11px] ml-1.5 flex items-center gap-1.5">
+            <TerminalIcon size={12} className="text-emerald-400" aria-hidden="true" />
+            visitor@rishav-sec:~$
+          </span>
         </div>
-
-        {/* Terminal Body */}
-        {!isCollapsed && (
-          <div
-            ref={scrollRef}
-            className="terminal-body"
-            onClick={focusInput}
-            role="log"
-            aria-label="Terminal command execution output"
-            aria-live="polite"
-          >
-            {history.map((entry) => (
-              <div key={entry.id} className={`terminal-line terminal-line-${entry.type}`}>
-                {entry.type === 'link' && entry.href ? (
-                  <a
-                    href={entry.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="terminal-link"
-                  >
-                    {entry.content}
-                  </a>
-                ) : (
-                  <span>{entry.content}</span>
-                )}
-              </div>
-            ))}
-
-            {/* Prompt & Input Line */}
-            <div className="terminal-input-line">
-              <span className="terminal-prompt" aria-hidden="true">
-                {PROMPT}
-              </span>
-              <input
-                ref={inputRef}
-                type="text"
-                className="terminal-input"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                spellCheck={false}
-                autoComplete="off"
-                autoCapitalize="off"
-                aria-label="Terminal command prompt"
-                placeholder="type 'help' or command..."
-              />
-              <span className="terminal-cursor" aria-hidden="true" />
-            </div>
-          </div>
-        )}
+        <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+          <span>ONLINE</span>
+        </div>
       </div>
-    </section>
+
+      {/* Terminal Output Body */}
+      <div
+        ref={terminalBodyRef}
+        className="terminal-body p-4 max-h-[260px] min-h-[190px] overflow-y-auto space-y-1.5 text-slate-300 leading-relaxed scrollbar-thin"
+        tabIndex={0}
+        role="region"
+        aria-label="Interactive cyber terminal console"
+      >
+        {history.map((l) => {
+          if (l.type === 'input') {
+            return (
+              <div key={l.id} className="text-emerald-400 font-semibold break-all">
+                {l.content}
+              </div>
+            )
+          }
+          if (l.type === 'error') {
+            return (
+              <div key={l.id} className="text-rose-400 break-all">
+                {l.content}
+              </div>
+            )
+          }
+          if (l.type === 'system') {
+            return (
+              <div key={l.id} className="text-slate-500 break-all text-[11px]">
+                {l.content}
+              </div>
+            )
+          }
+          if (l.type === 'link' && l.href) {
+            return (
+              <div key={l.id} className="break-all">
+                <Link
+                  to={l.href}
+                  className="text-cyan-400 hover:text-cyan-300 hover:underline font-semibold"
+                >
+                  {l.content} ↗
+                </Link>
+              </div>
+            )
+          }
+          return (
+            <div key={l.id} className="text-slate-300 whitespace-pre-wrap break-all">
+              {l.content}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Quick Command Chips */}
+      <div className="terminal-chips flex flex-wrap gap-1.5 px-3 py-2 bg-slate-950/60 border-t border-slate-800/80">
+        <span className="text-[10px] text-slate-500 self-center mr-1">RUN:</span>
+        {QUICK_COMMANDS.map((chip) => (
+          <button
+            key={chip}
+            type="button"
+            className="text-[10px] px-2 py-0.5 rounded bg-slate-800/80 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-slate-700/60 hover:border-emerald-500/50 transition-all font-mono"
+            onClick={(e) => {
+              e.stopPropagation()
+              executeCommand(chip)
+              inputRef.current?.focus()
+            }}
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
+
+      {/* Active Input Line */}
+      <form
+        onSubmit={handleSubmit}
+        className="terminal-input-row flex items-center px-3.5 py-2.5 bg-slate-950/90 border-t border-slate-800"
+      >
+        <span className="text-emerald-400 font-semibold select-none mr-2 whitespace-nowrap">
+          {PROMPT}
+        </span>
+        <div className="relative flex-1 flex items-center">
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="w-full bg-transparent text-slate-100 outline-none font-mono text-xs caret-transparent"
+            autoComplete="off"
+            spellCheck="false"
+            aria-label="Terminal command line input"
+          />
+          {/* Custom Blinking Cursor Effect */}
+          <span
+            className="terminal-blinking-cursor inline-block w-2 h-3.5 bg-emerald-400 animate-pulse ml-0.5 pointer-events-none"
+            aria-hidden="true"
+          />
+        </div>
+      </form>
+    </div>
   )
 }
-
-// Alias export for versatility
-export { Terminal as InteractiveTerminal }
