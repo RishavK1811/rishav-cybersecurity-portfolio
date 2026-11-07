@@ -48,16 +48,17 @@ export type ContactMetadataItem = {
 }
 
 export const contactMetadata: readonly ContactMetadataItem[] = [
-  { label: 'Opportunities', value: 'Internships & Entry Roles' },
-  { label: 'Focus', value: 'Defensive Security & SOC' },
-  { label: 'Communication', value: 'Direct & Professional' },
+  { label: 'Target Roles', value: 'SOC Analyst L1 · Junior Cybersecurity Analyst' },
+  { label: 'Availability', value: 'Internships & Entry-Level Positions' },
+  { label: 'Location', value: 'Patna, India · Open to Remote & Relocation' },
+  { label: 'Focus', value: 'Defensive Security · Blue Team · SIEM Triage' },
 ] as const
 
 export const profile = {
   name: 'Rishav Kumar',
   shortName: 'RK',
-  role: 'BCA Student | Aspiring SOC Analyst | Defensive Security Enthusiast',
-  statusMessage: 'Open to internship opportunities',
+  role: 'BCA Student | Aspiring SOC Analyst | Defensive Security & Blue Team',
+  statusMessage: 'Available for Internships & Entry-Level SOC / Blue Team Roles',
   academicStatus: 'BCA Student',
   institution: 'CIMAGE Group of Institutions, Patna',
   educationPeriod: '2025–2028',
@@ -66,7 +67,7 @@ export const profile = {
     "I'm a BCA student (2025–2028) at CIMAGE Group of Institutions, Patna, focused on cybersecurity, blue teaming, and defensive software development. I build practical tools with Python, study network fundamentals, and explore SOC workflows and CTF labs with an attacker mindset to build stronger defenses.",
   about:
     'I am an aspiring cybersecurity analyst and BCA student at CIMAGE Group of Institutions, Patna (2025–2028), specializing in defensive security, SOC operations, and security automation. My hands-on focus centers on Python scripting, Linux systems, networking protocols, SQL, and practical labs across TryHackMe and CTF environments. I believe in learning by building verifiable utilities, understanding how protocols function from first principles, and preparing for entry-level security analyst and internship opportunities.',
-  email: '',
+  email: 'rishavkumar181101@gmail.com',
   github: 'https://github.com/RishavK1811',
   linkedin: 'https://www.linkedin.com/in/rishav-kumar-317134368/',
   resumePath: '/resume.pdf',

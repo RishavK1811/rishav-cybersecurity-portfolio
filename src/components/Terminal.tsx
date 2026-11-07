@@ -7,7 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react'
 import { Link } from 'react-router-dom'
-import { profile, projects, skills } from '../data/portfolio'
+import { certifications, profile, projects, skills } from '../data/portfolio'
 
 interface TerminalLine {
   id: number
@@ -17,7 +17,7 @@ interface TerminalLine {
 }
 
 const PROMPT = 'visitor@rishav-sec:~$ '
-const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'projects', 'clear'] as const
+const QUICK_COMMANDS = ['whoami', 'skills', 'projects', 'certs', 'contact', 'clear'] as const
 
 let lineCounter = 0
 function nextId(): number {
@@ -29,9 +29,9 @@ function line(type: TerminalLine['type'], content: string, href?: string): Termi
 }
 
 const INITIAL_LINES: TerminalLine[] = [
-  line('system', 'SOC Workstation v2.6.4 (x86_64-antigravity-linux)'),
-  line('system', 'Type "help" to view commands or click the chips below.'),
-  line('system', '──────────────────────────────────────────────────────'),
+  line('system', 'Security Analyst Workstation · Interactive Portfolio Console'),
+  line('system', 'Click any command pill below or type commands into the prompt.'),
+  line('system', '──────────────────────────────────────────────────────────'),
 ]
 
 export function Terminal() {
@@ -75,19 +75,24 @@ export function Terminal() {
 
     if (cmd === 'help') {
       outputLines = [
-        line('output', 'Available commands:'),
-        line('output', '  whoami     - Display profile summary & defensive SOC focus'),
-        line('output', '  skills     - List security tools, systems & protocols'),
-        line('output', '  projects   - Show verified portfolio projects with links'),
+        line('output', 'Interactive Recruiter & Engineer Directory:'),
+        line('output', '  whoami     - Candidate overview, target roles & availability'),
+        line('output', '  skills     - Verified offensive & defensive security tools'),
+        line('output', '  projects   - Production tools & structured lab blueprints'),
+        line('output', '  certs      - Verified certifications with external verify links'),
+        line('output', '  contact    - Official email address and professional profiles'),
         line('output', '  clear      - Clear terminal screen history'),
-        line('output', '  help       - Print this command directory'),
+        line('output', '  help       - Display available commands'),
       ]
     } else if (cmd === 'whoami') {
       outputLines = [
-        line('output', `USER        : ${profile.name} (${profile.shortName})`),
-        line('output', `DISCIPLINE  : ${profile.role}`),
+        line('output', `CANDIDATE   : ${profile.name} (${profile.shortName})`),
+        line('output', `TARGET ROLE : SOC Analyst L1 · Junior Cybersecurity Analyst · Blue Team`),
         line('output', `ACADEMIC    : ${profile.academicStatus} · ${profile.institution}`),
-        line('output', `STATUS      : Online // Defense & Incident Triage Lab Mode`),
+        line('output', `LOCATION    : Patna, India (Open to Relocation & Remote Roles)`),
+        line('output', `STATUS      : Available for Internships & Entry-Level Positions`),
+        line('output', `DIRECT EMAIL: ${profile.email}`),
+        line('link', `  → Email: ${profile.email}`, `mailto:${profile.email}`),
       ]
     } else if (cmd === 'skills') {
       const topSkills = skills.flatMap((g) => g.items).slice(0, 8).join(', ')
@@ -109,13 +114,36 @@ export function Terminal() {
             `/projects/${p.slug}`
           )
         ),
-        line('system', '  Click any project above to inspect the case study.'),
+        line('system', '  Click any project link above to open its full case study.'),
+      ]
+    } else if (cmd === 'certs' || cmd === 'certifications') {
+      outputLines = [
+        line('output', 'KEY INDUSTRY CERTIFICATIONS & CREDENTIALS:'),
+        ...certifications.slice(0, 5).map((c) =>
+          line(
+            'link',
+            `  • ${c.title} — ${c.issuer} (${c.issueDate || c.issued})`,
+            c.credentialUrl || c.url || '#certifications'
+          )
+        ),
+        line('system', '  Click any credential above to inspect verification.'),
+      ]
+    } else if (cmd === 'contact' || cmd === 'email') {
+      outputLines = [
+        line('output', 'OFFICIAL CONTACT & COORDINATES:'),
+        line('output', `  • Direct Email : ${profile.email}`),
+        line('link', `    → Open mail client: ${profile.email}`, `mailto:${profile.email}`),
+        line('output', `  • LinkedIn     : ${profile.linkedin}`),
+        line('link', `    → Visit LinkedIn Profile`, profile.linkedin),
+        line('output', `  • GitHub       : ${profile.github}`),
+        line('link', `    → Visit GitHub Profile`, profile.github),
+        line('system', '  Click any link above to connect directly.'),
       ]
     } else {
       outputLines = [
         line(
           'error',
-          `Command not found: "${trimmed}". Type "help" for a list of commands.`
+          `Command not found: "${trimmed}". Click one of the buttons below or type "help".`
         ),
       ]
     }
@@ -163,22 +191,22 @@ export function Terminal() {
           <span className="w-3 h-3 rounded-full bg-green-500/90 inline-block" aria-hidden="true" />
           <span className="terminal-title text-slate-400 font-semibold text-[11px] ml-1.5 flex items-center gap-1.5">
             <TerminalIcon size={12} className="text-emerald-400" aria-hidden="true" />
-            visitor@rishav-sec:~$
+            workstation@rishav-sec:~$
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 font-mono">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
-          <span>ONLINE</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+          <span>READY · INTERACTIVE</span>
         </div>
       </div>
 
       {/* Terminal Output Body */}
       <div
         ref={terminalBodyRef}
-        className="terminal-body p-4 max-h-[260px] min-h-[190px] overflow-y-auto space-y-1.5 text-slate-300 leading-relaxed scrollbar-thin"
+        className="terminal-body p-3.5 sm:p-4 max-h-[220px] sm:max-h-[260px] min-h-[170px] sm:min-h-[190px] overflow-y-auto space-y-1.5 text-slate-300 leading-relaxed scrollbar-thin"
         tabIndex={0}
         role="region"
-        aria-label="Interactive cyber terminal console"
+        aria-label="Interactive cybersecurity terminal console"
       >
         {history.map((l) => {
           if (l.type === 'input') {
@@ -203,14 +231,26 @@ export function Terminal() {
             )
           }
           if (l.type === 'link' && l.href) {
+            const isExternal = l.href.startsWith('http') || l.href.startsWith('mailto:')
             return (
               <div key={l.id} className="break-all">
-                <Link
-                  to={l.href}
-                  className="text-cyan-400 hover:text-cyan-300 hover:underline font-semibold"
-                >
-                  {l.content} ↗
-                </Link>
+                {isExternal ? (
+                  <a
+                    href={l.href}
+                    target={l.href.startsWith('http') ? '_blank' : undefined}
+                    rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="text-cyan-400 hover:text-cyan-300 hover:underline font-semibold"
+                  >
+                    {l.content} ↗
+                  </a>
+                ) : (
+                  <Link
+                    to={l.href}
+                    className="text-cyan-400 hover:text-cyan-300 hover:underline font-semibold"
+                  >
+                    {l.content} ↗
+                  </Link>
+                )}
               </div>
             )
           }
@@ -222,14 +262,16 @@ export function Terminal() {
         })}
       </div>
 
-      {/* Quick Command Chips */}
-      <div className="terminal-chips flex flex-wrap gap-1.5 px-3 py-2 bg-slate-950/60 border-t border-slate-800/80">
-        <span className="text-[10px] text-slate-500 self-center mr-1">RUN:</span>
+      {/* Quick Click Command Pills for Non-Technical HRs */}
+      <div className="terminal-chips flex flex-wrap items-center gap-1.5 px-3 py-2 bg-slate-950/60 border-t border-slate-800/80">
+        <span className="text-[10px] text-slate-400 font-semibold uppercase mr-1 select-none">
+          CLICK TO RUN:
+        </span>
         {QUICK_COMMANDS.map((chip) => (
           <button
             key={chip}
             type="button"
-            className="text-[10px] px-2 py-0.5 rounded bg-slate-800/80 hover:bg-emerald-500/20 text-slate-300 hover:text-emerald-300 border border-slate-700/60 hover:border-emerald-500/50 transition-all font-mono"
+            className="text-[10.5px] px-2 py-0.5 rounded bg-slate-800/90 hover:bg-cyan-500/20 text-slate-200 hover:text-cyan-300 border border-slate-700/80 hover:border-cyan-500/60 transition-all font-mono font-semibold"
             onClick={(e) => {
               e.stopPropagation()
               executeCommand(chip)

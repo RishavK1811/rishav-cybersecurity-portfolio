@@ -1,8 +1,10 @@
 import {
   AlertTriangle,
+  Check,
   CheckCircle2,
   Code2,
   ContactRound,
+  Copy,
   Loader2,
   Mail,
   Send,
@@ -39,10 +41,29 @@ export function Contact() {
   const [status, setStatus] = useState<SubmissionStatus>('idle')
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [fieldErrors, setFieldErrors] = useState<ContactErrors>({})
+  const [copiedEmail, setCopiedEmail] = useState(false)
   const errorSummaryRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   const isSubmitting = status === 'submitting'
+
+  const handleCopyEmail = async () => {
+    if (!profile.email) return
+    try {
+      await navigator.clipboard.writeText(profile.email)
+      setCopiedEmail(true)
+      setTimeout(() => setCopiedEmail(false), 2500)
+    } catch {
+      const textarea = document.createElement('textarea')
+      textarea.value = profile.email
+      document.body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textarea)
+      setCopiedEmail(true)
+      setTimeout(() => setCopiedEmail(false), 2500)
+    }
+  }
 
   function handleInputChange(field: ContactField, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -159,12 +180,44 @@ export function Contact() {
               </div>
             ))}
           </div>
+
+          {/* Dedicated Direct Email & Copy Strip */}
+          {profile.email && (
+            <div className="direct-email-box bg-slate-900/80 border border-slate-800 p-3.5 rounded-lg mt-6 shadow-sm">
+              <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
+                Direct Recruiter &amp; Team Contact:
+              </span>
+              <div className="flex flex-wrap items-center justify-between gap-2.5">
+                <span className="text-sm font-mono text-cyan-400 select-all font-semibold">
+                  {profile.email}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-mono rounded bg-slate-800 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 border border-slate-700 hover:border-cyan-500/50 transition-all"
+                  aria-label="Copy email address to clipboard"
+                >
+                  {copiedEmail ? (
+                    <>
+                      <Check size={13} className="text-emerald-400" aria-hidden="true" />
+                      <span className="text-emerald-400 font-semibold">[ Copied! ]</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={13} aria-hidden="true" />
+                      <span>[ Copy Email ]</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="contact-side">
           <div>
             <p>
-              Interested in an internship, a technical conversation, or a thoughtful exchange about learning defensive cybersecurity? I&apos;d be glad to connect.
+              Available for entry-level SOC Analyst positions, Blue Team internships, and technical cybersecurity discussions. Feel free to connect directly via email, LinkedIn, or the inquiry form below.
             </p>
             {(profile.linkedin || profile.github || profile.email) && (
               <div className="contact-actions-row flex flex-wrap items-center gap-3 mt-6">
@@ -173,14 +226,14 @@ export function Contact() {
                     <ContactRound aria-hidden="true" size={17} /> Connect on LinkedIn
                   </a>
                 )}
-                {profile.github && (
-                  <a className="button button-quiet" href={profile.github} target="_blank" rel="noreferrer">
-                    <Code2 aria-hidden="true" size={17} /> View GitHub
-                  </a>
-                )}
                 {profile.email && (
                   <a className="button button-quiet" href={`mailto:${profile.email}`}>
                     <Mail aria-hidden="true" size={17} /> Send Email
+                  </a>
+                )}
+                {profile.github && (
+                  <a className="button button-quiet" href={profile.github} target="_blank" rel="noreferrer">
+                    <Code2 aria-hidden="true" size={17} /> View GitHub
                   </a>
                 )}
               </div>
@@ -211,16 +264,16 @@ export function Contact() {
                 role="alert"
                 tabIndex={-1}
               >
-                [!] Validation Alert: Please correct the highlighted fields before transmitting packet.
+                [!] Form Validation: Please correct the highlighted fields before submitting.
               </div>
             )}
 
-            {/* Terminal Success Banner */}
+            {/* Success Banner */}
             {status === 'success' && (
               <div
                 role="status"
                 aria-live="polite"
-                className="flex items-start gap-3 p-3.5 border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 font-mono text-xs sm:text-sm rounded shadow-[0_0_16px_rgba(16,185,129,0.15)]"
+                className="flex items-start gap-3 p-3.5 border border-emerald-500/40 bg-emerald-950/20 text-emerald-300 font-sans text-xs sm:text-sm rounded shadow-[0_0_16px_rgba(16,185,129,0.15)]"
               >
                 <CheckCircle2
                   size={18}
@@ -228,22 +281,22 @@ export function Contact() {
                   aria-hidden="true"
                 />
                 <div className="space-y-0.5">
-                  <div className="font-semibold text-emerald-300 tracking-wide">
-                    [+] Transmission Ack: Message delivered successfully.
+                  <div className="font-semibold text-emerald-300 tracking-wide font-mono">
+                    [✓] Message Delivered Successfully
                   </div>
-                  <p className="text-emerald-400/80 text-[11.5px]">
-                    Packet routed to personal inbox via Web3Forms gateway. A response will follow shortly.
+                  <p className="text-emerald-400/90 text-xs">
+                    Thank you for reaching out! Your message was delivered directly to my inbox and I will respond promptly.
                   </p>
                 </div>
               </div>
             )}
 
-            {/* Terminal Error Banner */}
+            {/* Error Banner */}
             {status === 'error' && (
               <div
                 role="alert"
                 aria-live="assertive"
-                className="flex items-start gap-3 p-3.5 border border-rose-500/40 bg-rose-950/20 text-rose-300 font-mono text-xs sm:text-sm rounded shadow-[0_0_16px_rgba(244,63,94,0.15)]"
+                className="flex items-start gap-3 p-3.5 border border-rose-500/40 bg-rose-950/20 text-rose-300 font-sans text-xs sm:text-sm rounded shadow-[0_0_16px_rgba(244,63,94,0.15)]"
               >
                 <AlertTriangle
                   size={18}
@@ -251,11 +304,15 @@ export function Contact() {
                   aria-hidden="true"
                 />
                 <div className="space-y-0.5">
-                  <div className="font-semibold text-rose-300 tracking-wide">
-                    [-] Transmission Failed: {errorMessage || 'Connection timed out or invalid key.'}
+                  <div className="font-semibold text-rose-300 tracking-wide font-mono">
+                    [!] Delivery Issue: {errorMessage || 'Connection timed out or network error.'}
                   </div>
-                  <p className="text-rose-400/80 text-[11.5px]">
-                    Packet delivery failed. Please verify network access or retry transmission.
+                  <p className="text-rose-400/90 text-xs">
+                    Unable to transmit form. Please reach out directly at{' '}
+                    <a href={`mailto:${profile.email}`} className="underline font-mono text-cyan-300">
+                      {profile.email}
+                    </a>
+                    .
                   </p>
                 </div>
               </div>
@@ -273,7 +330,7 @@ export function Contact() {
                   disabled={isSubmitting}
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="Your Name / Call Sign"
+                  placeholder="Your Name / Organization"
                   aria-invalid={fieldErrors.name ? true : undefined}
                   aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
                   className="disabled:opacity-50 disabled:cursor-not-allowed"
@@ -296,7 +353,7 @@ export function Contact() {
                   disabled={isSubmitting}
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="contact@domain.com"
+                  placeholder="recruiter@company.com"
                   aria-invalid={fieldErrors.email ? true : undefined}
                   aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
                   className="disabled:opacity-50 disabled:cursor-not-allowed"
@@ -319,7 +376,7 @@ export function Contact() {
                 disabled={isSubmitting}
                 value={formData.subject}
                 onChange={(e) => handleInputChange('subject', e.target.value)}
-                placeholder="e.g., Security Internship / Defensive Project Inquiry"
+                placeholder="e.g., SOC Analyst Opening / Security Internship Inquiry"
                 aria-invalid={fieldErrors.subject ? true : undefined}
                 aria-describedby={fieldErrors.subject ? 'contact-subject-error' : undefined}
                 className="disabled:opacity-50 disabled:cursor-not-allowed"
@@ -341,7 +398,7 @@ export function Contact() {
                 disabled={isSubmitting}
                 value={formData.message}
                 onChange={(e) => handleInputChange('message', e.target.value)}
-                placeholder="Compose your transmission here..."
+                placeholder="Write your message or inquiry here..."
                 aria-invalid={fieldErrors.message ? true : undefined}
                 aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
                 className="disabled:opacity-50 disabled:cursor-not-allowed"
@@ -361,16 +418,16 @@ export function Contact() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" aria-hidden="true" size={17} />
-                  <span>[ TRANSMITTING_PACKET... ]</span>
+                  <span>Sending Message...</span>
                 </>
               ) : status === 'success' ? (
                 <>
-                  <span>Transmit Another Message</span>
+                  <span>Send Another Message</span>
                   <Send aria-hidden="true" size={17} />
                 </>
               ) : (
                 <>
-                  <span>Transmit Message</span>
+                  <span>Send Message</span>
                   <Send aria-hidden="true" size={17} />
                 </>
               )}

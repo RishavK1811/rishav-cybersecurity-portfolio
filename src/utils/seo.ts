@@ -1,12 +1,12 @@
 import { profile, type Project } from '../data/portfolio'
 
 export const HOMEPAGE_SEO = {
-  title: 'Rishav Kumar | Cybersecurity Portfolio & Security Analyst',
+  title: 'Rishav Kumar | Cybersecurity Analyst & Blue Team Portfolio',
   description:
-    'Defensive cybersecurity portfolio of Rishav Kumar — BCA student (2025–2028) at CIMAGE Patna and aspiring SOC analyst. Featuring Python security tooling, SOC fundamentals, network protocols, and practical security labs.',
-  ogTitle: 'Rishav Kumar | Cybersecurity Portfolio & Security Analyst',
+    'Defensive cybersecurity portfolio of Rishav Kumar — BCA student at CIMAGE Patna, aspiring SOC analyst, and Blue Team practitioner. Verified Python security tools, threat analysis, and SOC lab projects.',
+  ogTitle: 'Rishav Kumar | Cybersecurity Analyst & Blue Team Portfolio',
   ogDescription:
-    'Explore the defensive cybersecurity portfolio of Rishav Kumar: Python security tooling, SOC fundamentals, network protocols, and security labs.',
+    "Explore Rishav Kumar's cybersecurity portfolio: SOC analysis, Python security automation, network defense, and verified industry credentials.",
 } as const
 
 let cachedSiteUrl: string | null = null

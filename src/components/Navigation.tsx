@@ -1,4 +1,4 @@
-import { FileDown, Menu, X } from 'lucide-react'
+import { FileDown, FileText, Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { homeHashHref, navItems, profile } from '../data/portfolio'
@@ -186,7 +186,7 @@ export function Navigation() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="text-[11px] font-mono text-emerald-400 uppercase tracking-wider">
-              STATUS: ONLINE // SOC MODE
+              Available for SOC &amp; Blue Team Roles
             </span>
           </div>
         </div>
@@ -229,18 +229,28 @@ export function Navigation() {
               )
             })}
           </div>
-          <a
-            className="nav-cv-cyan-btn"
-            href="/resume.pdf"
-            download="Rishav_Kumar_Cybersecurity_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={closeMenuForNavigation}
-            aria-label="Download Rishav Kumar's Cybersecurity Resume"
-          >
-            <FileDown aria-hidden="true" size={14} />
-            <span>[ Download CV ]</span>
-          </a>
+          <div className="flex items-center gap-1.5">
+            <a
+              className="nav-cv-cyan-btn flex items-center gap-1.5"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenuForNavigation}
+              aria-label="View Rishav Kumar's Cybersecurity Resume in new tab"
+            >
+              <FileText aria-hidden="true" size={14} />
+              <span>View Resume ↗</span>
+            </a>
+            <a
+              className="p-1.5 text-slate-400 hover:text-cyan-300 border border-slate-700/70 hover:border-cyan-500/50 rounded transition-colors"
+              href="/resume.pdf"
+              download="Rishav_Kumar_Cybersecurity_Resume.pdf"
+              aria-label="Download Resume PDF file"
+              title="Download PDF"
+            >
+              <FileDown aria-hidden="true" size={14} />
+            </a>
+          </div>
         </div>
       </nav>
     </header>

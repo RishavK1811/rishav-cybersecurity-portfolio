@@ -5,6 +5,17 @@ import { projects, type Project } from '../data/portfolio'
 import { useReveal } from '../hooks/useReveal'
 import { SectionHeading } from './SectionHeading'
 
+const PROJECT_SECURITY_IMPACTS: Record<string, string> = {
+  'password-security-checker':
+    'Prevents credential-stuffing and weak password misconfigurations by enforcing strict length, symbol, and character-diversity policies with instant feedback.',
+  'network-scanner':
+    'Enhances internal asset visibility and flags unauthorized connected hosts and exposed attack surfaces across virtualized lab subnets.',
+  'security-log-analyzer':
+    'Automates SOC authentication log auditing by parsing event streams to detect brute-force spikes, account lockouts, and anomalous access patterns.',
+  'web-security-practice-lab':
+    'Strengthens web application resilience by auditing defense-in-depth HTTP security headers, CORS origins, and input sanitization boundaries.',
+}
+
 export function getProjectDomainCategory(p: Project): string {
   const text = `${p.slug} ${p.category} ${p.title} ${p.summary} ${p.tools.join(' ')}`.toLowerCase()
   if (
@@ -126,6 +137,17 @@ export function Projects() {
                   <span className="project-category">{featuredProject.category}</span>
                 </div>
                 <h3>{featuredProject.title}</h3>
+
+                {/* Practical Security Outcome / Problem Solved */}
+                <div className="project-impact-box bg-slate-900/90 border-l-2 border-cyan-400 px-3 py-2 rounded-r my-2.5">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block mb-0.5">
+                    Security Impact &amp; Problem Solved:
+                  </span>
+                  <p className="text-xs text-slate-200 leading-relaxed m-0 font-sans">
+                    {PROJECT_SECURITY_IMPACTS[featuredProject.slug] || featuredProject.summary}
+                  </p>
+                </div>
+
                 <p>{featuredProject.summary}</p>
                 <div className="project-tags flex flex-wrap gap-2">
                   <span className="tag-verified">{featuredProject.status}</span>
@@ -234,6 +256,17 @@ export function Projects() {
                       <span className="project-category">{project.category}</span>
                     </div>
                     <h3>{project.title}</h3>
+
+                    {/* Practical Security Outcome / Problem Solved */}
+                    <div className="project-impact-box bg-slate-900/90 border-l-2 border-cyan-400 px-3 py-2 rounded-r my-2.5">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block mb-0.5">
+                        Security Impact &amp; Problem Solved:
+                      </span>
+                      <p className="text-xs text-slate-200 leading-relaxed m-0 font-sans">
+                        {PROJECT_SECURITY_IMPACTS[project.slug] || project.summary}
+                      </p>
+                    </div>
+
                     <p>{project.summary}</p>
                     <div className="project-tags flex flex-wrap gap-2">
                       <span className="tag-draft">{project.status}</span>

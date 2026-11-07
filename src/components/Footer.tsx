@@ -33,7 +33,19 @@ export function Footer({ compact = false }: FooterProps) {
           </div>
         </div>
         <div className="footer-bottom flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <span>© {new Date().getFullYear()} {profile.name}. Built with care.</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-slate-400">
+            <span>© {new Date().getFullYear()} {profile.name}. All rights reserved.</span>
+            {profile.email && (
+              <a
+                href={`mailto:${profile.email}`}
+                className="font-mono text-cyan-400 hover:text-cyan-300 transition-colors inline-flex items-center gap-1.5"
+                aria-label={`Send email to ${profile.email}`}
+              >
+                <Mail size={13} aria-hidden="true" />
+                <span>{profile.email}</span>
+              </a>
+            )}
+          </div>
           {socialLinks.length > 0 && <div className="footer-socials flex items-center gap-2">{socialLinks.map(({ label, url, kind, opensInNewTab }) => { const Icon = socialIcons[kind]; return <a key={label} href={url} target={opensInNewTab ? '_blank' : undefined} rel={opensInNewTab ? 'noreferrer' : undefined} aria-label={label}><Icon aria-hidden="true" size={17} /></a> })}</div>}
         </div>
       </div>
