@@ -54,11 +54,15 @@ export function QuickConnectFab() {
 
   return (
     <div
-      className={`fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 print:hidden transition-all duration-300 ${
+      className={`fixed z-40 print:hidden transition-all duration-300 ${
         isVisible
           ? 'opacity-100 translate-y-0 pointer-events-auto'
           : 'opacity-0 translate-y-4 pointer-events-none'
       }`}
+      style={{
+        bottom: 'calc(1.25rem + env(safe-area-inset-bottom, 0px))',
+        right: 'calc(1.25rem + env(safe-area-inset-right, 0px))',
+      }}
     >
       <a
         href="#contact"

@@ -90,8 +90,10 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 92px;
   background: var(--bg);
+  background-color: #090a0e;
   overflow-x: clip;
   max-width: 100vw;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -100,11 +102,15 @@ body {
   overflow-x: clip;
   max-width: 100vw;
   background: var(--bg);
+  background-color: #090a0e;
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior-y: none;
 }
 
 /* Subtle background cyber grid and ambient lighting */
@@ -153,7 +159,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { letter-spacing: -0.04em; line-height: 1.1; text-wrap: balance; }
 
-.container { width: min(calc(100% - 64px), var(--content)); margin-inline: auto; }
+.container { width: min(calc(100% - clamp(24px, 4vw, 64px)), var(--content)); margin-inline: auto; }
 .section { padding-block: clamp(52px, 6vw, 76px); }
 .section-surface {
   position: relative;
@@ -441,6 +447,7 @@ h1, h2, h3 { letter-spacing: -0.04em; line-height: 1.1; text-wrap: balance; }
   border-color: var(--border);
   background: rgba(23, 22, 29, 0.4);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--text);
   box-shadow: none;
 }
@@ -2190,6 +2197,16 @@ button:active,
   }
 }
 
+/* Tablet Grid Balance: center odd single card (e.g. 3rd card in 2-column view) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .certifications-grid > .credential-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: 680px;
+    margin-inline: auto;
+    width: 100%;
+  }
+}
+
 @media (max-width: 640px) {
   .certifications-grid {
     grid-template-columns: 1fr;
@@ -2605,9 +2622,14 @@ button:active,
   background: rgba(17, 17, 22, 0.85);
   color: var(--text);
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+@media (min-width: 768px) {
+  .contact-form input, .contact-form textarea {
+    font-size: 14px;
+  }
 }
 .contact-form input { min-height: 44px; padding: 10px 12px; }
 .contact-form textarea { min-height: 110px; padding: 12px; resize: vertical; }
@@ -2969,7 +2991,7 @@ button:active,
 /* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
-@media (max-width: 960px) {
+@media (max-width: 1080px) {
   .contact-card { padding: 44px; gap: 8%; }
   .about-grid, .journey-layout { gap: 8%; }
   .project-card {
@@ -3754,7 +3776,7 @@ button:active,
     font-size: 11px;
   }
   .terminal-input {
-    font-size: 13px;
+    font-size: 16px;
   }
   .case-takeaways-card {
     padding: 18px 16px;
@@ -3762,5 +3784,47 @@ button:active,
   .takeaways-grid {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+}
+
+/* ==========================================================================
+   Cross-Platform & Mobile Ergonomics Optimizations
+   ========================================================================== */
+
+/* 1. Prevent iOS Safari auto-zoom on form focus */
+@media screen and (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* 2. Touch Screen Sticky Hover Reset (iOS & Android) */
+@media (hover: none) and (pointer: coarse) {
+  .hero-tldr-card:hover,
+  .fab-btn:hover,
+  .methodology-card:hover,
+  .skill-card:hover,
+  .skill-card.is-emphasized,
+  .project-card:hover,
+  .featured-project-card:hover,
+  .timeline-card:hover,
+  .credential-card:hover,
+  .credential-card.is-featured:hover,
+  .hero-ledger-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* 3. Mobile "Desktop Site" Mode Aspect Ratio Guard */
+@media screen and (max-aspect-ratio: 13/9) and (max-width: 1080px) {
+  .hero {
+    min-height: auto;
+    padding-top: calc(88px + env(safe-area-inset-top, 0px));
+  }
+  .hero-ledger {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

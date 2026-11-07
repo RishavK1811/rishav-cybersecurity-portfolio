@@ -9,6 +9,8 @@ export const HOMEPAGE_SEO = {
     "Explore Rishav Kumar's cybersecurity portfolio: SOC analysis, Python security automation, network defense, and verified industry credentials.",
 } as const
 
+export const DEFAULT_PRODUCTION_URL = 'https://rishavkumarportfolio.vercel.app'
+
 let cachedSiteUrl: string | null = null
 
 export function getSiteUrl(): string {
@@ -27,7 +29,7 @@ export function getSiteUrl(): string {
     return cachedSiteUrl
   }
 
-  cachedSiteUrl = ''
+  cachedSiteUrl = DEFAULT_PRODUCTION_URL
   return cachedSiteUrl
 }
 
@@ -88,6 +90,12 @@ export function setHomepageSeo(): void {
   updateMetaTag('meta[name="description"]', 'name', 'description', HOMEPAGE_SEO.description)
   updateMetaTag('meta[property="og:title"]', 'property', 'og:title', HOMEPAGE_SEO.ogTitle)
   updateMetaTag('meta[property="og:description"]', 'property', 'og:description', HOMEPAGE_SEO.ogDescription)
+  updateMetaTag('meta[property="og:image"]', 'property', 'og:image', `${siteUrl}/og-banner.svg`)
+  updateMetaTag('meta[property="og:image:width"]', 'property', 'og:image:width', '1200')
+  updateMetaTag('meta[property="og:image:height"]', 'property', 'og:image:height', '630')
+  updateMetaTag('meta[property="og:image:type"]', 'property', 'og:image:type', 'image/svg+xml')
+  updateMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image')
+  updateMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', `${siteUrl}/og-banner.svg`)
 
   if (siteUrl) {
     const homeUrl = `${siteUrl}/`
@@ -110,6 +118,12 @@ export function setProjectSeo(project: Project | undefined): () => void {
     updateMetaTag('meta[name="description"]', 'name', 'description', project.summary)
     updateMetaTag('meta[property="og:title"]', 'property', 'og:title', projectTitle)
     updateMetaTag('meta[property="og:description"]', 'property', 'og:description', project.summary)
+    updateMetaTag('meta[property="og:image"]', 'property', 'og:image', `${siteUrl}/og-banner.svg`)
+    updateMetaTag('meta[property="og:image:width"]', 'property', 'og:image:width', '1200')
+    updateMetaTag('meta[property="og:image:height"]', 'property', 'og:image:height', '630')
+    updateMetaTag('meta[property="og:image:type"]', 'property', 'og:image:type', 'image/svg+xml')
+    updateMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image')
+    updateMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', `${siteUrl}/og-banner.svg`)
 
     if (siteUrl) {
       const projectUrl = `${siteUrl}/projects/${project.slug}`

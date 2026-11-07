@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://rishavk1811.github.io/rishav-cybersecurity-portfolio/</loc>
+    <loc>https://rishavkumarportfolio.vercel.app/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://rishavk1811.github.io/rishav-cybersecurity-portfolio/projects/password-security-checker</loc>
+    <loc>https://rishavkumarportfolio.vercel.app/projects/password-security-checker</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://rishavkumarportfolio.vercel.app/projects/network-scanner</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rishavkumarportfolio.vercel.app/projects/security-log-analyzer</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://rishavkumarportfolio.vercel.app/projects/web-security-practice-lab</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

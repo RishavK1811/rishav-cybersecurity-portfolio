@@ -333,7 +333,7 @@ export function Contact() {
                   placeholder="Your Name / Organization"
                   aria-invalid={fieldErrors.name ? true : undefined}
                   aria-describedby={fieldErrors.name ? 'contact-name-error' : undefined}
-                  className="disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-base md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {fieldErrors.name && (
                   <span className="field-error" id="contact-name-error">
@@ -356,7 +356,7 @@ export function Contact() {
                   placeholder="recruiter@company.com"
                   aria-invalid={fieldErrors.email ? true : undefined}
                   aria-describedby={fieldErrors.email ? 'contact-email-error' : undefined}
-                  className="disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="text-base md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {fieldErrors.email && (
                   <span className="field-error" id="contact-email-error">
@@ -379,7 +379,7 @@ export function Contact() {
                 placeholder="e.g., SOC Analyst Opening / Security Internship Inquiry"
                 aria-invalid={fieldErrors.subject ? true : undefined}
                 aria-describedby={fieldErrors.subject ? 'contact-subject-error' : undefined}
-                className="disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-base md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               />
               {fieldErrors.subject && (
                 <span className="field-error" id="contact-subject-error">
@@ -401,7 +401,7 @@ export function Contact() {
                 placeholder="Write your message or inquiry here..."
                 aria-invalid={fieldErrors.message ? true : undefined}
                 aria-describedby={fieldErrors.message ? 'contact-message-error' : undefined}
-                className="disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-base md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               />
               {fieldErrors.message && (
                 <span className="field-error" id="contact-message-error">

@@ -298,7 +298,7 @@ export function Terminal() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-transparent text-slate-100 outline-none font-mono text-xs caret-transparent"
+            className="w-full bg-transparent text-slate-100 outline-none font-mono text-base md:text-xs caret-transparent"
             autoComplete="off"
             spellCheck="false"
             aria-label="Terminal command line input"

@@ -11,7 +11,11 @@ const robotsPath = path.join(distDir, 'robots.txt')
 
 const isGitHubPages = process.env.GITHUB_PAGES === 'true'
 const customSiteUrl = process.env.SITE_URL?.replace(/\/+$/, '')
-const siteUrl = customSiteUrl || (isGitHubPages ? 'https://rishavk1811.github.io/rishav-cybersecurity-portfolio' : '')
+const siteUrl =
+  customSiteUrl ||
+  (isGitHubPages
+    ? 'https://rishavk1811.github.io/rishav-cybersecurity-portfolio'
+    : 'https://rishavkumarportfolio.vercel.app')
 
 // 1. GitHub Pages 404 Fallback for client-side deep routing
 if (isGitHubPages) {

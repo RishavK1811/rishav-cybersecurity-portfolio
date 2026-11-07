@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rishavk1811.github.io/rishav-cybersecurity-portfolio/sitemap.xml
+Sitemap: https://rishavkumarportfolio.vercel.app/sitemap.xml

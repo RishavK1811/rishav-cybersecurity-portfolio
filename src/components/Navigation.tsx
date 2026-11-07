@@ -167,7 +167,12 @@ export function Navigation() {
   }, [open])
 
   return (
-    <header className="site-header">
+    <header
+      className="site-header"
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+      }}
+    >
       {/* 2px glowing cyber scroll-progress indicator */}
       <div
         className="scroll-progress-bar"
@@ -210,6 +215,9 @@ export function Navigation() {
           id="main-navigation"
           ref={menuPanelRef}
           className={`nav-panel ${open ? 'is-open' : ''}`}
+          style={{
+            paddingBottom: 'calc(18px + env(safe-area-inset-bottom, 0px))',
+          }}
         >
           <div className="nav-links flex items-center">
             {navItems.map((item) => {

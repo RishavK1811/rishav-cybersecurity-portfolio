@@ -48,9 +48,9 @@ export function Hero() {
 
   return (
     <section className="hero container" aria-labelledby="hero-title">
-      <div className="hero-content-grid grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <div className="hero-content-grid grid grid-cols-1 xl:grid-cols-12 gap-8 xl:gap-10 items-center">
         {/* Left Column: Headline, Bio & Primary CTAs */}
-        <div className="hero-main lg:col-span-7 flex flex-col justify-center">
+        <div className="hero-main xl:col-span-7 flex flex-col justify-center">
           {/* Eyebrow & Live Security Status Badge */}
           <div className="hero-eyebrow-row flex flex-wrap items-center gap-3 mb-4">
             <span className="eyebrow">{profile.portfolioPeriod}</span>
@@ -241,7 +241,7 @@ export function Hero() {
         </div>
 
         {/* Right Column: Mini Interactive Cyber Terminal */}
-        <div className="hero-terminal-column lg:col-span-5 w-full flex justify-center">
+        <div className="hero-terminal-column xl:col-span-5 w-full flex justify-center">
           <Terminal />
         </div>
       </div>
