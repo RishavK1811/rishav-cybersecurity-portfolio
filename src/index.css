@@ -7,13 +7,13 @@
   --color-surface: #17161d;
   --color-surface-raised: #1d1b24;
   --color-border: #2b2833;
-  --color-text: #f5f2f8;
-  --color-text-muted: #aaa4b5;
-  --color-text-dim: #7d7888;
-  --color-accent: #b5a0f2;
-  --color-accent-hover: #cabaff;
+  --color-text: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-text-dim: #64748b;
+  --color-accent: #10b981;
+  --color-accent-hover: #34d399;
   --font-sans: 'Manrope', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 
@@ -27,16 +27,16 @@
   --surface-glass-card: rgba(23, 22, 29, 0.58);
   --border: #2b2833;
   --border-subtle: rgba(43, 40, 51, 0.65);
-  --border-lavender: rgba(181, 160, 242, 0.18);
-  --border-lavender-glow: rgba(181, 160, 242, 0.38);
-  --text: #f5f2f8;
-  --text-muted: #aaa4b5;
-  --text-dim: #7d7888;
-  --accent: #b5a0f2;
-  --accent-hover: #cabaff;
-  --accent-glow: rgba(181, 160, 242, 0.12);
+  --border-lavender: rgba(16, 185, 129, 0.18);
+  --border-lavender-glow: rgba(16, 185, 129, 0.38);
+  --text: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --accent: #10b981;
+  --accent-hover: #34d399;
+  --accent-glow: rgba(16, 185, 129, 0.15);
   --font-sans: 'Manrope', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'DM Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-expo: cubic-bezier(0.22, 1, 0.36, 1);
   --content: 1260px;
@@ -127,10 +127,11 @@ body {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, rgba(245, 242, 248, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 242, 248, 0.02) 1px, transparent 1px);
+    linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(circle at 50% 30%, black 40%, transparent 80%);
+  opacity: 0.2;
 }
 
 .site-shell::after {
@@ -142,8 +143,9 @@ body {
   height: 500px;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(181, 160, 242, 0.045), transparent 70%);
-  filter: blur(40px);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08), transparent 70%);
+  filter: blur(50px);
+  opacity: 0.2;
 }
 
 button, a {
@@ -160,7 +162,14 @@ h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { letter-spacing: -0.04em; line-height: 1.1; text-wrap: balance; }
 
 .container { width: min(calc(100% - clamp(24px, 4vw, 64px)), var(--content)); margin-inline: auto; }
-.section { padding-block: clamp(52px, 6vw, 76px); }
+.section {
+  padding: 4rem 1.5rem;
+}
+@media (max-width: 768px) {
+  .section {
+    padding: 2.5rem 1rem;
+  }
+}
 .section-surface {
   position: relative;
   border-block: 1px solid var(--border);
@@ -2525,7 +2534,14 @@ button:active,
 /* ==========================================================================
    Contact Section (Glassmorphic Module)
    ========================================================================== */
-.contact-section { padding: 0 0 68px; }
+.contact-section {
+  padding: 4rem 1.5rem;
+}
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 2.5rem 1rem;
+  }
+}
 .contact-card {
   display: grid;
   grid-template-columns: 1fr minmax(340px, .85fr);
@@ -2633,11 +2649,13 @@ button:active,
 }
 .contact-form input { min-height: 44px; padding: 10px 12px; }
 .contact-form textarea { min-height: 110px; padding: 12px; resize: vertical; }
-.contact-form input:focus-visible, .contact-form textarea:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-color: var(--accent);
-  box-shadow: 0 0 16px rgba(181, 160, 242, 0.2);
+.contact-form input:focus,
+.contact-form input:focus-visible,
+.contact-form textarea:focus,
+.contact-form textarea:focus-visible {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25), 0 0 16px rgba(16, 185, 129, 0.15);
 }
 .contact-form [aria-invalid='true'] { border-color: var(--accent); }
 .form-error-summary {
@@ -3812,7 +3830,8 @@ button:active,
   .timeline-card:hover,
   .credential-card:hover,
   .credential-card.is-featured:hover,
-  .hero-ledger-card:hover {
+  .hero-ledger-card:hover,
+  .bento-card:hover {
     transform: none !important;
     box-shadow: none !important;
   }
@@ -3828,3 +3847,95 @@ button:active,
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ==========================================================================
+   Bento Cards, Terminal HUD & Certificate Modal Utilities
+   ========================================================================== */
+
+/* 1 & 2. Clean Bento Card & Alignment - Halka border, sirf hover par emerald glow, bottom-aligned buttons */
+.bento-card,
+.project-card,
+.credential-card,
+.methodology-card,
+.skill-card,
+.hero-ledger-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  text-align: left !important;
+  padding: 1.5rem !important;
+  background: rgba(15, 23, 42, 0.65) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+.bento-card:hover,
+.project-card:hover,
+.credential-card:hover,
+.methodology-card:hover,
+.skill-card:hover,
+.hero-ledger-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Card bottom actions aligned horizontally and anchored to bottom */
+.project-actions,
+.credential-card-footer {
+  margin-top: auto !important;
+}
+
+/* 4. Terminal HUD - Fixed height taaki typing se page jump na kare */
+.terminal-hud,
+.terminal-body {
+  min-height: 240px !important;
+  max-height: 280px !important;
+  overflow-y: auto !important;
+  font-family: 'JetBrains Mono', 'Fira Code', 'DM Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  background: rgba(9, 13, 22, 0.9);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+/* 6. Certificate Modal - Mobile aur Desktop dono par perfect fit */
+.cert-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+}
+
+.cert-modal-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  width: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* 8. Typography & Visual Hierarchy */
+body, p, li, .project-card-info p, .labs-description, .about-copy p, .methodology-card p {
+  color: #cbd5e1;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+

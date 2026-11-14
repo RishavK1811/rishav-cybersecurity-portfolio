@@ -172,7 +172,7 @@ export function Skills() {
                   const isHighlighted = hoveredCategory === group.title
                   return (
                     <article
-                      className={`skill-card stagger-card ${isHighlighted ? 'is-emphasized' : ''}`}
+                      className={`skill-card bento-card stagger-card ${isHighlighted ? 'is-emphasized' : ''}`}
                       key={group.title}
                       style={{ '--stagger-index': index } as CSSProperties}
                     >

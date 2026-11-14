@@ -245,20 +245,20 @@ export function Projects() {
           <div className="project-cards">
             {filteredLabs.map((project, index) => (
               <article
-                className="project-card lab-card stagger-card filter-card-animate"
+                className="project-card lab-card bento-card stagger-card filter-card-animate"
                 key={`${project.slug}-${activeFilter}`}
                 style={{ '--stagger-index': showFeatured ? index + 1 : index } as CSSProperties}
               >
-                <div className="project-card-info">
+                <div className="project-card-info flex flex-col justify-between h-full">
                   <div>
                     <div className="project-meta-top flex items-center gap-2.5">
                       <span className="lab-badge">Lab Blueprint</span>
                       <span className="project-category">{project.category}</span>
                     </div>
-                    <h3>{project.title}</h3>
+                    <h3 className="text-left font-bold text-slate-100">{project.title}</h3>
 
                     {/* Practical Security Outcome / Problem Solved */}
-                    <div className="project-impact-box bg-slate-900/90 border-l-2 border-cyan-400 px-3 py-2 rounded-r my-2.5">
+                    <div className="project-impact-box bg-slate-900/90 border-l-2 border-cyan-400 px-3 py-2 rounded-r my-2.5 text-left">
                       <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold block mb-0.5">
                         Security Impact &amp; Problem Solved:
                       </span>
@@ -267,15 +267,15 @@ export function Projects() {
                       </p>
                     </div>
 
-                    <p>{project.summary}</p>
-                    <div className="project-tags flex flex-wrap gap-2">
+                    <p className="text-left text-slate-300">{project.summary}</p>
+                    <div className="project-tags flex flex-wrap gap-2 mt-3">
                       <span className="tag-draft">{project.status}</span>
                       {project.tools.map((tool) => (
                         <span key={tool}>{tool}</span>
                       ))}
                     </div>
                   </div>
-                  <div className="project-actions flex items-center gap-3">
+                  <div className="project-actions flex items-center gap-3 mt-auto pt-4 border-t border-slate-800/80">
                     {project.github && (
                       <a
                         className="icon-link"

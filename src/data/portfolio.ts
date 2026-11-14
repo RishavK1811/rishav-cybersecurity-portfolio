@@ -37,6 +37,7 @@ export interface Certification {
   credentialId?: string
   skills: readonly string[]
   status?: 'completed' | 'in-progress'
+  imageUrl?: string
   // Backward-compatibility aliases
   issued?: string
   url?: string

@@ -120,7 +120,7 @@ export function Contact() {
       const payload = new FormData(formElement)
 
       // Ensure key and processed fields are appended cleanly
-      payload.set('access_key', WEB3FORMS_ACCESS_KEY)
+      payload.append('access_key', import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY)
       payload.set('name', name)
       payload.set('email', email)
       payload.set('subject', subject ? `[PORTFOLIO CONTACT] ${subject}` : `Portfolio Contact from ${name}`)
@@ -418,7 +418,7 @@ export function Contact() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" aria-hidden="true" size={17} />
-                  <span>Sending Message...</span>
+                  <span>Sending...</span>
                 </>
               ) : status === 'success' ? (
                 <>

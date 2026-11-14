@@ -248,7 +248,7 @@ export function Hero() {
 
       {/* Technical Overview Ledger (Telemetry Cards) */}
       <div className="hero-ledger" aria-label="Technical profile overview">
-        <div className="hero-ledger-card" style={{ '--stagger-index': 0 } as CSSProperties}>
+        <div className="hero-ledger-card bento-card" style={{ '--stagger-index': 0 } as CSSProperties}>
           <div className="hero-ledger-header">
             <GraduationCap size={15} className="hero-ledger-icon" aria-hidden="true" />
             <span className="hero-ledger-label">Academic Track</span>
@@ -257,7 +257,7 @@ export function Hero() {
           <div className="hero-ledger-meta">{profile.institution}</div>
         </div>
 
-        <div className="hero-ledger-card" style={{ '--stagger-index': 1 } as CSSProperties}>
+        <div className="hero-ledger-card bento-card" style={{ '--stagger-index': 1 } as CSSProperties}>
           <div className="hero-ledger-header">
             <ShieldCheck size={15} className="hero-ledger-icon" aria-hidden="true" />
             <span className="hero-ledger-label">Primary Discipline</span>
@@ -266,7 +266,7 @@ export function Hero() {
           <div className="hero-ledger-meta">Blue teaming, protocol analysis &amp; triage</div>
         </div>
 
-        <div className="hero-ledger-card" style={{ '--stagger-index': 2 } as CSSProperties}>
+        <div className="hero-ledger-card bento-card" style={{ '--stagger-index': 2 } as CSSProperties}>
           <div className="hero-ledger-header">
             <TerminalIcon size={15} className="hero-ledger-icon" aria-hidden="true" />
             <span className="hero-ledger-label">Core Tooling</span>
@@ -275,7 +275,7 @@ export function Hero() {
           <div className="hero-ledger-meta">Automation, log parsing &amp; shell scripts</div>
         </div>
 
-        <div className="hero-ledger-card" style={{ '--stagger-index': 3 } as CSSProperties}>
+        <div className="hero-ledger-card bento-card" style={{ '--stagger-index': 3 } as CSSProperties}>
           <div className="hero-ledger-header">
             <Compass size={15} className="hero-ledger-icon" aria-hidden="true" />
             <span className="hero-ledger-label">Hands-On Practice</span>

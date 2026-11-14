@@ -1,12 +1,12 @@
 import { profile, type Project } from '../data/portfolio'
 
 export const HOMEPAGE_SEO = {
-  title: 'Rishav Kumar | Cybersecurity Analyst & Blue Team Portfolio',
+  title: 'Rishav Kumar | Cybersecurity & Cloud Portfolio',
   description:
-    'Defensive cybersecurity portfolio of Rishav Kumar — BCA student at CIMAGE Patna, aspiring SOC analyst, and Blue Team practitioner. Verified Python security tools, threat analysis, and SOC lab projects.',
-  ogTitle: 'Rishav Kumar | Cybersecurity Analyst & Blue Team Portfolio',
+    'Cybersecurity student specializing in Network Packet Analysis, Static Security Analysis (SAST), and Google Cloud Platform.',
+  ogTitle: 'Rishav Kumar | Cybersecurity Portfolio',
   ogDescription:
-    "Explore Rishav Kumar's cybersecurity portfolio: SOC analysis, Python security automation, network defense, and verified industry credentials.",
+    'Explore my security projects, GCP challenge labs, and certifications.',
 } as const
 
 export const DEFAULT_PRODUCTION_URL = 'https://rishavkumarportfolio.vercel.app'

@@ -200,10 +200,10 @@ export function Terminal() {
         </div>
       </div>
 
-      {/* Terminal Output Body */}
+      {/* Terminal Output Body - Fixed HUD height eliminates page layout shift */}
       <div
         ref={terminalBodyRef}
-        className="terminal-body p-3.5 sm:p-4 max-h-[220px] sm:max-h-[260px] min-h-[170px] sm:min-h-[190px] overflow-y-auto space-y-1.5 text-slate-300 leading-relaxed scrollbar-thin"
+        className="terminal-hud terminal-body p-3.5 sm:p-4 min-h-[240px] max-h-[280px] overflow-y-auto space-y-1.5 text-slate-300 leading-relaxed scrollbar-thin"
         tabIndex={0}
         role="region"
         aria-label="Interactive cybersecurity terminal console"
